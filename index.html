@@ -22,13 +22,22 @@ label{display:block;margin:8px 0}.ck{display:flex;gap:8px;align-items:center}.ck
 #res button{display:block;width:100%;text-align:right;margin-top:4px}
 #vp{height:62vh;overflow:hidden;position:relative;touch-action:none;border:1px solid var(--line);border-radius:10px;background:#fff;margin-top:8px}
 #cv{position:absolute;right:0;top:0;transform-origin:100% 0;width:max-content;padding:12px}
-.tr ul{list-style:none;margin:0 26px 0 0;padding:0;border-right:2px solid var(--gold)}
-.tr>ul{margin:0;border:0}
-.tr li{position:relative;padding:8px 22px 0 0}
-.tr li::before{content:'';position:absolute;right:0;top:34px;width:20px;border-top:2px solid var(--gold)}
-.tr>ul>li{padding-right:0}.tr>ul>li::before{display:none}
-.cd{display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--gold);background:linear-gradient(#fff,#f8efd6);border-radius:10px;padding:6px 10px;cursor:pointer;white-space:nowrap}
+.tr ul{display:flex;justify-content:center;padding:20px 0 0;margin:0;list-style:none;position:relative}
+.tr ul ul::before{content:'';position:absolute;top:0;left:50%;height:20px;border-left:2px solid var(--gold)}
+.tr li{position:relative;padding:20px 6px 0;display:flex;flex-direction:column;align-items:center}
+.tr li::before,.tr li::after{content:'';position:absolute;top:0;width:50%;height:20px;border-top:2px solid var(--gold)}
+.tr li::before{right:50%}.tr li::after{left:50%;border-left:2px solid var(--gold)}
+.tr li:only-child{padding-top:0}.tr li:only-child::before,.tr li:only-child::after{display:none}
+.tr li:first-child::after{border:0}.tr li:last-child::before{border:0}
+.tr li:first-child:not(:only-child)::before{border-right:2px solid var(--gold)}
+.tr>ul{padding-top:0}.tr>ul>li{padding-top:0}.tr>ul>li::before,.tr>ul>li::after{display:none}
+.cd{display:flex;flex-direction:column;align-items:center;min-width:96px;border:1.5px solid var(--gold);background:linear-gradient(#fff,#f8efd6);border-radius:10px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.tg{margin:4px 0;padding:0 10px;border-radius:50%}
 .cd small{color:#7a6a45}.cd.hit{background:var(--g2)}.cd button{padding:0 8px}
+.lc{margin-right:14px;padding-right:12px;border-right:2px solid var(--gold)}
+.lr{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:8px}.lr.hit{background:var(--g2)}
+.lr .tg{width:34px;height:34px;padding:0;margin:0;border-radius:8px;flex:none}.lr .dot{width:34px;text-align:center;color:var(--gold);flex:none}
+.nm{flex:1;cursor:pointer}.nm small{color:#7a6a45}#lt{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
 .pc,.it{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
 .pc h3{margin:0}.sub,.empty{color:#7a6a45}
 #md{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:20;padding:12px}
@@ -48,14 +57,15 @@ table{width:100%;border-collapse:collapse;background:#fff}td,th{border:1px solid
 <p id="le" style="color:#a22"></p><button class="btn" style="width:100%">دخول</button></form>
 <p class="sub" style="text-align:center">اسم المستخدم لعضو العائلة: سنة الميلاد. الكود يمنحه لك المدير.</p></div>
 <div id="app" hidden>
-<header><h1>عائلة أبوهربيد<small>تصميم: سائد أبوهربيد</small></h1><button data-a="bell">🔔 <span id="bc"></span></button><button data-a="out">خروج</button></header>
+<header><h1>عائلة أبوهربيد<small>تصميم: سائد أبوهربيد</small></h1><button data-a="bell">🔔 <span id="bc"></span></button><button data-a="pw">⚙</button><button data-a="out">خروج</button></header>
 <nav id="nv"></nav><main id="mn"></main>
+</div>
 <a id="fab" href="https://wa.me/972599631479" target="_blank" rel="noopener" aria-label="واتساب">☎</a>
-<div id="dsg">تصميم: سائد أبوهربيد</div></div>
+<div id="dsg">تصميم: سائد أبوهربيد</div>
 <div id="md" hidden data-a="bg"></div><div id="pa"></div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,createUserWithEmailAndPassword}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,createUserWithEmailAndPassword,updatePassword}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import{getFirestore,collection,doc,setDoc,addDoc,updateDoc,deleteDoc,getDoc,onSnapshot,writeBatch}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 window.onunhandledrejection=e=>alert('تعذّرت العملية: '+(e.reason?.code||e.reason));
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -63,23 +73,23 @@ const nd=s=>String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d
 const CFG={apiKey:"AIzaSyCjQxKhLzb3f81ZUCsCsm9DfPcupo22CVU",authDomain:"abu-harbid-e5802.firebaseapp.com",projectId:"abu-harbid-e5802",storageBucket:"abu-harbid-e5802.firebasestorage.app",messagingSenderId:"991072738560",appId:"1:991072738560:web:6cc3d71afb895a37d8a7e5"};
 const MGR='brns.111@gmail.com',today=()=>new Date().toLocaleDateString('ar');
 const fa=initializeApp(CFG),auth=getAuth(fa),fs=getFirestore(fa);
-let db={persons:[],sens:{},codes:[],posts:{council:[],news:[],mediation:[],forms:[]},log:[],notes:[]},subs=[],seeded=false;
-const P=id=>db.persons.find(p=>p.id==id),ch=id=>db.persons.filter(p=>p.parent==id),R=()=>db.persons.find(p=>!p.parent);
-let S=null,tab='tree',exp=new Set(),hl=null,T={x:0,y:0,k:1},drag=false;
+let db={persons:[],sens:{},codes:[],posts:{council:[],news:[],mediation:[],forms:[],ads:[]},log:[],notes:[],polls:[],votes:[]},subs=[],seeded=false;
+const desc=id=>db.persons.filter(c=>c.parent==id).flatMap(c=>[c.id,...desc(c.id)]),P=id=>db.persons.find(p=>p.id==id),ch=id=>db.persons.filter(p=>p.parent==id),R=()=>db.persons.find(p=>!p.parent);
+let view=localStorage.ah_view||'list',focus=null,S=null,tab='tree',exp=new Set(),hl=null,T={x:0,y:0,k:.85},drag=false;
 const can=p=>S&&(S.role=='admin'||(S.role=='sup'&&S.perms.includes(p))),adm=()=>S.role=='admin';
 const lg=t=>addDoc(collection(fs,'log'),{w:S.name,t,d:new Date().toLocaleString('ar'),ts:Date.now()});
 const note=t=>addDoc(collection(fs,'notes'),{t,d:Date.now()});
-const TABS=[['tree','الشجرة'],['people','الأفراد'],['council','مجلس العائلة'],['news','المناسبات والأخبار'],['mediation','لجنة الإصلاح والوساطة'],['dir','دليل الأفراد والمهارات'],['forms','الأكواد والنماذج'],['guide','الإرشادات'],['rep','الكشوف'],['log','سجل التعديلات']];
+const TABS=[['tree','الشجرة'],['people','الأفراد'],['council','مجلس العائلة'],['news','المناسبات والأخبار'],['polls','الاستفتاءات'],['mediation','لجنة الإصلاح والوساطة'],['dir','دليل الأفراد والمهارات'],['forms','الأكواد والنماذج'],['guide','الإرشادات'],['rep','الكشوف'],['log','سجل التعديلات']];
 const vis=k=>k=='rep'?adm():k=='log'?S.role!='member':true;
-const PERMS=[['council','مجلس العائلة'],['news','المناسبات والأخبار'],['mediation','الإصلاح والوساطة'],['forms','النماذج'],['people','تعديل بيانات الأفراد']];
+const PERMS=[['council','مجلس العائلة'],['news','المناسبات والأخبار'],['mediation','الإصلاح والوساطة'],['forms','النماذج'],['people','تعديل بيانات الأفراد'],['ads','إعلانات الدليل'],['polls','الاستفتاءات']];
 /* دخول وبيانات */
 const ui=()=>{if(!S)return;if(!exp.size&&R())exp.add(R().id);render()};
 const rebuild=()=>db.persons.forEach(p=>Object.assign(p,db.sens[p.id]||{}));
 const sub=(n,f)=>subs.push(onSnapshot(collection(fs,n),q=>{f(q.docs.map(d=>({id:d.id,...d.data()})));ui()},e=>console.warn(n,e.code)));
 function listen(){
 sub('persons',a=>{db.persons=a;rebuild();if(S.role=='admin'&&!a.length&&!seeded){seeded=true;setDoc(doc(fs,'persons','root'),{name:'سالم',parent:null,alive:true})}});
-sub('posts',a=>{db.posts={council:[],news:[],mediation:[],forms:[]};a.sort((x,y)=>y.ts-x.ts).forEach(p=>db.posts[p.k]?.push(p))});
-sub('notes',a=>db.notes=a.sort((x,y)=>y.d-x.d));
+sub('posts',a=>{db.posts={council:[],news:[],mediation:[],forms:[],ads:[]};a.sort((x,y)=>y.ts-x.ts).forEach(p=>db.posts[p.k]?.push(p))});
+sub('polls',a=>db.polls=a.sort((x,y)=>y.ts-x.ts));sub('votes',a=>db.votes=a);sub('notes',a=>db.notes=a.sort((x,y)=>y.d-x.d));
 if(S.role!='member')sub('log',a=>db.log=a.sort((x,y)=>y.ts-x.ts).slice(0,200));
 if(S.role=='admin'){sub('sens',a=>{db.sens={};a.forEach(x=>db.sens[x.id]=x);rebuild()});sub('users',a=>db.codes=a.filter(u=>u.code))}}
 async function mk(o){const code=Math.random().toString(36).slice(2,10).toUpperCase().padEnd(8,'X');
@@ -88,9 +98,9 @@ const c={...o,code};await setDoc(doc(fs,'users',r.user.uid),c);lg('إنشاء ك
 function start(){$('#lg').hidden=true;$('#app').hidden=false;tab='tree';render()}
 onAuthStateChanged(auth,async u=>{subs.forEach(f=>f());subs=[];
 if(!u){S=null;$('#lg').hidden=false;$('#app').hidden=true;return}
-if(u.email==MGR)S={role:'admin',name:'سائد أبوهربيد',perms:[]};
+if(u.email==MGR)S={role:'admin',name:'سائد أبوهربيد',perms:[],uid:u.uid};
 else{const d=await getDoc(doc(fs,'users',u.uid));if(!d.exists()){await signOut(auth);$('#le').textContent='هذا الكود غير فعّال. اطلب كوداً جديداً من المدير.';return}
-const x=d.data();S={role:x.role,name:x.label||'',perms:x.perms||[]}}
+const x=d.data();S={role:x.role,name:x.label||'',perms:x.perms||[],uid:u.uid}}
 listen();start()});
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#le').textContent='';const u=nd($('#lu').value),p=$('#lp').value.trim(),m=u=='saed19';
 try{await signInWithEmailAndPassword(auth,m?MGR:p.toLowerCase()+'@abuharbid.app',m?p:u+p.toUpperCase())}catch(x){$('#le').textContent='اسم المستخدم أو الكود غير صحيح.'}};
@@ -98,31 +108,36 @@ try{await signInWithEmailAndPassword(auth,m?MGR:p.toLowerCase()+'@abuharbid.app'
 function render(){$('#nv').innerHTML=TABS.filter(t=>vis(t[0])).map(t=>`<button data-a="tab" data-i="${t[0]}" class="${t[0]==tab?'on':''}">${t[1]}</button>`).join('');
 $('#mn').innerHTML=V[tab]();const n=db.notes.filter(x=>x.d>(+localStorage.ah_seen||0)).length;$('#bc').textContent=n||'';if(tab=='tree')gest()}
 const V={
-tree:()=>`<div class="bar"><input id="q" placeholder="ابحث عن فرد بالاسم"><button data-a="zi">+</button><button data-a="zo">−</button><button data-a="fit">⟲</button></div><div id="res"></div><div id="vp"><div id="cv" class="tr"></div></div>`,
+tree:()=>`<div class="bar"><input id="q" placeholder="ابحث عن فرد بالاسم"><button data-a="vw">${view=='list'?'🌳 مخطط':'☰ قائمة'}</button></div><div class="bar" style="margin-top:6px;flex-wrap:wrap"><button data-a="ea">فتح الكل</button><button data-a="ec">إغلاق الكل</button>${view=='tree'?'<button data-a="zi">+</button><button data-a="zo">−</button><button data-a="fit">⟲ ملاءمة</button>':''}${focus?'<button class="btn" data-a="unf">الشجرة كاملة</button>':''}</div><div id="res"></div><div id="lt" ${view=='list'?'':'hidden'}></div><div id="vp" ${view=='tree'?'':'hidden'}><div id="cv" class="tr"></div></div>`,
 people:()=>`<h2>الأفراد</h2>${adm()?'<button class="btn" data-a="pa">+ إضافة فرد</button>':''}<input id="pq" placeholder="بحث بالاسم" oninput="$('#pl').innerHTML=pl(this.value)"><div id="pl">${pl('')}</div>`,
 council:()=>posts('council','مجلس العائلة','شؤون المجلس واجتماعاته وقراراته.'),
 news:()=>posts('news','المناسبات والأخبار','أخبار العائلة والمناسبات والإعلانات.'),
 mediation:()=>posts('mediation','لجنة الإصلاح والوساطة','أعمال اللجنة والوساطة والإصلاح بين أفراد العائلة.'),
-dir:()=>`<h2>دليل الأفراد والمهارات</h2><input placeholder="ابحث بالاسم أو المهنة أو المهارة أو الحي" oninput="$('#dl').innerHTML=dl(this.value)"><div id="dl">${dl('')}</div>`,
+dir:()=>`<h2>دليل الأفراد والمهارات</h2><p class="sub">تعرّف على أفراد العائلة ومهنهم ومهاراتهم وخبراتهم.</p>${posts('ads','📢 إعلانات','مصالح ومحلات ومهارات أفراد العائلة.')}<h3>الأفراد</h3><input placeholder="ابحث بالاسم أو المهنة أو المهارة أو الحي" oninput="$('#dl').innerHTML=dl(this.value)"><div id="dl">${dl('')}</div>`,
+polls:()=>`<h2>الاستفتاءات</h2>${can('polls')?'<button class="btn" data-a="qa">+ استفتاء جديد</button>':''}`+(db.polls.map(q=>{const v=db.votes.filter(x=>x.poll==q.id),my=v.find(x=>x.uid==S.uid),c=[0,1].map(i=>v.filter(x=>x.c==i).length);return `<article class="pc"><h3>${esc(q.q)}</h3>${q.pair.map((t,i)=>`<button data-a="vt" data-i="${q.id}" data-k="${i}" ${my?'disabled':''} class="${my&&my.c==i?'btn':''}">${esc(t)} (${c[i]})</button>`).join(' ')}<p><small>${my?'تم تسجيل صوتك':'لم تصوّت بعد'} • المشاركون: ${v.length}</small></p>${adm()?`<button data-a="qd" data-i="${q.id}">حذف</button>`:''}</article>`}).join('')||'<p class="empty">لا توجد استفتاءات.</p>'),
 forms:()=>posts('forms','الأكواد التلقائية والنماذج','نماذج جاهزة وإجراءات الحصول على كود الدخول.')+(adm()?codesPanel():''),
-guide:()=>`<h2>إرشادات استخدام التطبيق</h2><div class="g">${[['🔑','سجّل الدخول','اكتب سنة ميلادك والكود الذي أعطاك إياه المدير.'],['🌳','تصفّح الشجرة','اضغط (+) لفتح فرع و(−) لإغلاقه.'],['🤏','كبّر وحرّك','باصبعين للتكبير، وبإصبع واحد للتحريك.'],['🔍','ابحث','اكتب اسم الفرد واضغط على النتيجة.'],['👤','اعرض البيانات','اضغط على بطاقة الفرد لترى بياناته وأبناءه.'],['🔔','تابع الإشعارات','الجرس يخبرك بكل جديد.'],['☎','تواصل مع المدير','زر واتساب العائم يفتح محادثة مباشرة.'],['📲','ثبّت التطبيق','من قائمة المتصفح: إضافة إلى الشاشة الرئيسية.']].map(s=>`<div class="it"><span>${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('')}</div>`,
+guide:()=>`<h2>إرشادات استخدام التطبيق</h2><div class="g">${[['🔑','سجّل الدخول','اكتب سنة ميلادك والكود الذي أعطاك إياه المدير.'],['🌳','تصفّح الشجرة','اضغط (+) لفتح فرع و(−) لإغلاقه.'],['🤏','كبّر وحرّك','باصبعين للتكبير، وبإصبع واحد للتحريك، ونقرتان على الفراغ لملاءمة الشجرة. أو بدّل بين المخطط والقائمة.'],['🔍','ابحث','اكتب اسم الفرد واضغط على النتيجة.'],['👤','اعرض البيانات','اضغط على بطاقة الفرد لترى بياناته وأبناءه.'],['🔔','تابع الإشعارات','الجرس يخبرك بكل جديد.'],['☎','تواصل مع المدير','زر واتساب العائم يفتح محادثة مباشرة.'],['📲','ثبّت التطبيق','من قائمة المتصفح: إضافة إلى الشاشة الرئيسية.']].map(s=>`<div class="it"><span>${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('')}</div>`,
 rep:()=>`<h2>الكشوف والطباعة</h2><select id="rt">${Object.entries(RT).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><div class="row"><button class="btn" data-a="rs">عرض</button><button data-a="rp">طباعة</button></div><div id="rb"></div>`,
 log:()=>`<h2>سجل التعديلات</h2>${db.log.map(l=>`<div class="it"><b>${esc(l.w)}</b> — ${esc(l.t)}<br><small>${l.d}</small></div>`).join('')||'<p class="empty">لا توجد تعديلات بعد.</p>'}`};
 function posts(k,t,d){const a=db.posts[k];return `<h2>${t}</h2><p class="sub">${d}</p>${can(k)?`<button class="btn" data-a="ta" data-k="${k}">+ إضافة</button>`:''}`+(a.map(p=>`<article class="pc"><h3>${esc(p.title)}</h3><p>${esc(p.text).replace(/\n/g,'<br>')}</p><small>${p.date}</small>${can(k)?`<div class="row"><button data-a="te" data-k="${k}" data-i="${p.id}">تعديل</button>${adm()?`<button data-a="td" data-k="${k}" data-i="${p.id}">حذف</button>`:''}</div>`:''}</article>`).join('')||`<p class="empty">لا توجد عناصر بعد.${can(k)?' اضغط «إضافة» لنشر أول عنصر.':''}</p>`)}
 function pl(q){return db.persons.filter(p=>p.name.includes(q)).map(p=>`<div class="it" data-a="sp" data-i="${p.id}" style="cursor:pointer"><b>${esc(p.name)}</b> <small>${p.year||''} ${p.alive===false?'(متوفى)':''}</small></div>`).join('')}
 function dl(q){return db.persons.filter(p=>[p.name,p.job,p.skills,p.hood].join(' ').includes(q)).map(p=>`<div class="it" data-a="sp" data-i="${p.id}" style="cursor:pointer"><b>${esc(p.name)}</b><br><small>${esc([p.job,p.skills,p.hood].filter(Boolean).join(' • '))}</small></div>`).join('')||'<p class="empty">لا نتائج.</p>'}
-function codesPanel(){return `<h2>أكواد الدخول</h2><button class="btn" data-a="ca">+ كود جديد</button>${db.codes.map(c=>`<div class="it">${esc(c.label||'')} — ${c.role=='sup'?'مشرف':'عضو'}<br>المستخدم: <b>${c.year}</b> • الكود: <b>${c.code}</b> <button data-a="cr" data-i="${c.code}">إلغاء</button></div>`).join('')||'<p class="empty">لم تُنشأ أكواد بعد.</p>'}`}
+function codesPanel(){return `<h2>أكواد الدخول</h2><button class="btn" data-a="ca">+ كود جديد</button>${db.codes.map(c=>`<div class="it">${esc(c.label||'')} — ${c.role=='sup'?'مشرف':'عضو'}<br>المستخدم: <b>${c.year}</b> • الكود: <b>${c.code}</b> <button data-a="cn" data-i="${c.code}">تغيير الكود</button> <button data-a="cr" data-i="${c.code}">إلغاء</button></div>`).join('')||'<p class="empty">لم تُنشأ أكواد بعد.</p>'}`}
 /* الشجرة */
-function node(p){const k=ch(p.id),o=exp.has(p.id);return `<li><div class="cd ${hl==p.id?'hit':''}" data-a="sp" data-i="${p.id}"><b>${esc(p.name)}</b><small>${p.year||''}</small><small>${k.length?k.length+' أبناء':''}</small>${k.length?`<button data-a="tg" data-i="${p.id}">${o?'−':'+'}</button>`:''}</div>${o&&k.length?'<ul>'+k.map(node).join('')+'</ul>':''}</li>`}
-function draw(){const c=$('#cv');if(c&&R())c.innerHTML='<ul>'+node(R())+'</ul>'}
+function node(p){const k=ch(p.id),o=exp.has(p.id),n=k.length;return `<li><div class="cd ${hl==p.id?'hit':''}" data-a="sp" data-i="${p.id}"><b>${esc(p.name)}</b><small>${p.year||''}${n?' • '+n+' أبناء':''}</small></div>${n?`<button class="tg" data-a="tg" data-i="${p.id}">${o?'−':'+'}</button>`:''}${o&&n?'<ul>'+k.map(node).join('')+'</ul>':''}</li>`}
+function lnode(p){const k=ch(p.id),o=exp.has(p.id),n=k.length;return `<div class="ln"><div class="lr ${hl==p.id?'hit':''}">${n?`<button class="tg" data-a="tg" data-i="${p.id}">${o?'▾':'◂'}</button>`:'<span class="dot">•</span>'}<span class="nm" data-a="sp" data-i="${p.id}"><b>${esc(p.name)}</b> <small>${p.year||''}${n?' • '+n+' أبناء':''}</small></span></div>${o&&n?'<div class="lc">'+k.map(lnode).join('')+'</div>':''}</div>`}
+function draw(){if(!R())return;const r=(focus&&P(focus))||R(),c=$('#cv'),l=$('#lt');if(c)c.innerHTML='<ul>'+node(r)+'</ul>';if(l)l.innerHTML=lnode(r)}
+function fit(){const vp=$('#vp'),c=$('#cv');if(!c||!vp.clientWidth)return;T={x:0,y:0,k:Math.min(1,Math.max(.15,(vp.clientWidth-16)/c.offsetWidth))};ap()}
+function zoomAt(f,cx,cy){const r=$('#vp').getBoundingClientRect(),sx=cx-r.right,sy=cy-r.top,k1=Math.min(2.5,Math.max(.15,T.k*f)),g=k1/T.k;T.x=sx+(T.x-sx)*g;T.y=sy-(sy-T.y)*g;T.k=k1;ap()}
 function ap(){$('#cv').style.transform=`translate(${T.x}px,${T.y}px) scale(${T.k})`}
-function gest(){draw();ap();const vp=$('#vp'),M=new Map();let d0=0,k0=1;const di=()=>{const a=[...M.values()];return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])};
-vp.onpointerdown=e=>{M.set(e.pointerId,[e.clientX,e.clientY]);drag=false;if(M.size==2){d0=di();k0=T.k}};
+function gest(){draw();ap();const vp=$('#vp'),M=new Map();let dp=1,pm=[0,0],lt=0;
+const a2=()=>[...M.values()],mid=()=>{const a=a2();return[(a[0][0]+a[1][0])/2,(a[0][1]+a[1][1])/2]},di=()=>{const a=a2();return Math.hypot(a[0][0]-a[1][0],a[0][1]-a[1][1])||1};
+vp.onpointerdown=e=>{M.set(e.pointerId,[e.clientX,e.clientY]);drag=false;if(M.size==2){dp=di();pm=mid()}else{const n=Date.now();if(!e.target.closest('.cd')&&n-lt<300)fit();lt=n}};
 vp.onpointermove=e=>{if(!M.has(e.pointerId))return;const o=M.get(e.pointerId);M.set(e.pointerId,[e.clientX,e.clientY]);
-if(M.size==2){T.k=Math.min(2.5,Math.max(.3,k0*di()/d0));drag=true}else{const dx=e.clientX-o[0],dy=e.clientY-o[1];if(Math.abs(dx)+Math.abs(dy)>1)drag=drag||Math.hypot(dx,dy)>3;T.x+=dx;T.y+=dy}ap()};
+if(M.size==2){const d=di(),m=mid();zoomAt(d/dp,m[0],m[1]);T.x+=m[0]-pm[0];T.y+=m[1]-pm[1];dp=d;pm=m;drag=true;ap()}else{const dx=e.clientX-o[0],dy=e.clientY-o[1];if(Math.hypot(dx,dy)>3)drag=true;T.x+=dx;T.y+=dy;ap()}};
 vp.onpointerup=vp.onpointercancel=e=>{M.delete(e.pointerId);setTimeout(()=>drag=false,60)};
-vp.onwheel=e=>{e.preventDefault();zm(e.deltaY<0?1.1:.9)}}
-const zm=f=>{T.k=Math.min(2.5,Math.max(.3,T.k*f));ap()};
+vp.onwheel=e=>{e.preventDefault();zoomAt(e.deltaY<0?1.1:.9,e.clientX,e.clientY)}}
+const zm=f=>{const r=$('#vp').getBoundingClientRect();zoomAt(f,r.left+r.width/2,r.top+r.height/2)};
 /* نوافذ */
 const md=h=>{$('#md').innerHTML=`<div class="mc">${h}</div>`;$('#md').hidden=false},cl=()=>$('#md').hidden=true;
 function fm(t,f,ok){md(`<h3>${t}</h3><form>${f.map(x=>x.t=='c'?`<label class="ck"><input type="checkbox" name="${x.k}" ${x.v?'checked':''}>${x.l}</label>`:x.t=='s'?`<label>${x.l}<select name="${x.k}">${x.o.map(o=>`<option value="${o[0]}" ${o[0]==x.v?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`:x.t=='a'?`<label>${x.l}<textarea name="${x.k}" rows="5">${esc(x.v)}</textarea></label>`:`<label>${x.l}<input name="${x.k}" value="${esc(x.v)}"></label>`).join('')}<div class="row"><button class="btn">حفظ</button><button type="button" data-a="cl">إلغاء</button></div></form>`);
@@ -133,7 +148,7 @@ function showP(id){const p=P(id);if(!p)return;const f=P(p.parent),k=ch(id),r=(l,
 md(`<h3>${esc(p.name)}</h3><dl>${r('سنة الميلاد',p.year)}${r('الحالة',p.alive===false?'متوفى':'حي')}${r('المهنة',p.job)}${r('الحي',p.hood)}${r('المهارات',p.skills)}${r('عدد أفراد الأسرة',p.fam)}${r('اسم الزوجة',p.sp)}${S.role!='member'?r('رقم الجوال',p.phone):''}${adm()?r('رقم الهوية',p.idn)+r('هوية الزوجة',p.spid):''}</dl>
 ${f?`<p>الأب: <button data-a="sp" data-i="${f.id}">${esc(f.name)}</button></p>`:''}
 ${k.length?`<p>الأبناء:</p>${k.map(c=>`<button data-a="sp" data-i="${c.id}">${esc(c.name)}</button> `).join('')}`:''}
-<div class="row" style="flex-wrap:wrap">${can('people')?`<button data-a="pe" data-i="${id}">تعديل</button>`:''}${adm()?`<button data-a="pa" data-i="${id}">+ ابن</button><button data-a="pc" data-i="${id}">كود الدخول</button>${p.parent?`<button data-a="pd" data-i="${id}">حذف</button>`:''}`:''}<button data-a="cl">إغلاق</button></div>`)}
+<div class="row" style="flex-wrap:wrap">${k.length?`<button data-a="fo" data-i="${id}">سلسلته كاملة (${desc(id).length})</button>`:''}${can('people')?`<button data-a="pe" data-i="${id}">تعديل</button>`:''}${adm()?`<button data-a="pa" data-i="${id}">+ ابن</button><button data-a="pc" data-i="${id}">كود الدخول</button>${p.parent?`<button data-a="pd" data-i="${id}">حذف</button>`:''}`:''}<button data-a="cl">إغلاق</button></div>`)}
 /* كشوف */
 const RT={men:'كشف الرجال',women:'كشف النساء',alive:'كشف الأحياء',dead:'كشف الأموات',hood:'كشف الأحياء السكنية'};
 function rep(t){const A=db.persons,tb=(h,r)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map(x=>'<tr>'+x.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')}</table>`;
@@ -147,18 +162,29 @@ if(a=='bg'&&e.target!=t)return;if(drag&&t.classList.contains('cd'))return;
 if(a=='tab'){tab=i;render()}
 else if(a=='tg'){e.stopPropagation();exp.has(i)?exp.delete(i):exp.add(i);draw()}
 else if(a=='sp')showP(i);else if(a=='cl'||a=='bg')cl();
-else if(a=='zi')zm(1.2);else if(a=='zo')zm(.8);else if(a=='fit'){T={x:0,y:0,k:1};ap()}
-else if(a=='find'){let p=P(i);hl=i;while(p&&p.parent){exp.add(p.parent);p=P(p.parent)}draw();$('#res').innerHTML='';showP(i)}
+else if(a=='zi')zm(1.2);else if(a=='zo')zm(.8);else if(a=='fit')fit();
+else if(a=='find'){focus=null;let p=P(i);hl=i;while(p&&p.parent){exp.add(p.parent);p=P(p.parent)}draw();$('#res').innerHTML='';showP(i)}
 else if(a=='out'){await signOut(auth);location.reload()}
 else if(a=='bell'){localStorage.ah_seen=Date.now();md(`<h3>الإشعارات</h3>${db.notes.map(n=>`<div class="it">${esc(n.t)}<br><small>${new Date(n.d).toLocaleString('ar')}</small></div>`).join('')||'<p class="empty">لا إشعارات.</p>'}<button data-a="cl">إغلاق</button>`);$('#bc').textContent=''}
 else if(a=='pa'){const par=i||R().id;fm('إضافة فرد',[{k:'parent',l:'الأب',t:'s',v:par,o:db.persons.map(p=>[p.id,p.name])},...PF({})],async d=>{const{idn,spid,phone,...pub}=clean(d),id=uid();await setDoc(doc(fs,'persons',id),pub);await setDoc(doc(fs,'sens',id),{idn,spid,phone});exp.add(d.parent);lg('إضافة فرد: '+d.name);cl()})}
 else if(a=='pe'){const p=P(i);fm('تعديل البيانات',PF(p),async d=>{const{idn,spid,phone,...pub}=clean(d);await updateDoc(doc(fs,'persons',i),pub);if(adm())await setDoc(doc(fs,'sens',i),{idn,spid,phone});lg('تعديل بيانات: '+p.name);cl()})}
 else if(a=='pd'){const p=P(i);if(!confirm('حذف '+p.name+' وجميع أبنائه؟'))return;const del=new Set([i]);let g=1;while(g){g=0;db.persons.forEach(x=>{if(del.has(x.parent)&&!del.has(x.id)){del.add(x.id);g=1}})}const b=writeBatch(fs);del.forEach(x=>{b.delete(doc(fs,'persons',x));b.delete(doc(fs,'sens',x))});await b.commit();lg('حذف: '+p.name);cl()}
-else if(a=='pc'){const p=P(i);if(!p.year){alert('أضف سنة الميلاد للفرد أولًا');return}let c=db.codes.find(c=>c.pid==i);if(!c)c=await mk({role:'member',year:p.year,label:p.name,pid:i,perms:[]});md(`<h3>كود الدخول</h3><p>${esc(p.name)}</p><p>اسم المستخدم (سنة الميلاد): <b>${c.year}</b></p><p>الكود: <b style="font-size:22px">${c.code}</b></p><button data-a="cl">إغلاق</button>`)}
+else if(a=='pc'){const p=P(i);if(!p.year){alert('أضف سنة الميلاد للفرد أولًا');return}let c=db.codes.find(c=>c.pid==i);if(!c)c=await mk({role:'member',year:p.year,label:p.name,pid:i,perms:[]});md(`<h3>كود الدخول</h3><p>${esc(p.name)}</p><p>اسم المستخدم (سنة الميلاد): <b>${c.year}</b></p><p>الكود: <b style="font-size:22px">${c.code}</b></p><button data-a="cn" data-i="${c.code}">تغيير الكود</button> <button data-a="cl">إغلاق</button>`)}
 else if(a=='ta'||a=='te'){const o=a=='te'?db.posts[k].find(x=>x.id==i):{title:'',text:''};fm(a=='te'?'تعديل':'إضافة',[{k:'title',l:'العنوان',v:o.title},{k:'text',l:'النص',t:'a',v:o.text}],async d=>{if(a=='te')await updateDoc(doc(fs,'posts',i),{title:d.title,text:d.text,date:today()});else await addDoc(collection(fs,'posts'),{k,...d,date:today(),ts:Date.now()});lg((a=='te'?'تعديل: ':'إضافة: ')+d.title);note((a=='te'?'تم تحديث: ':'جديد: ')+d.title);cl()})}
 else if(a=='td'){if(!confirm('حذف العنصر؟'))return;await deleteDoc(doc(fs,'posts',i));lg('حذف عنصر')}
 else if(a=='ca'){fm('كود جديد',[{k:'label',l:'الاسم',v:''},{k:'year',l:'سنة الميلاد (اسم المستخدم)',v:''},{k:'role',l:'النوع',t:'s',v:'member',o:[['member','عضو (مشاهدة فقط)'],['sup','مشرف']]},...PERMS.map(p=>({k:'p_'+p[0],l:'صلاحية: '+p[1],t:'c',v:false}))],async d=>{if(!nd(d.year)){alert('أدخل سنة الميلاد');return}await mk({role:d.role,year:nd(d.year),label:d.label,perms:d.role=='sup'?PERMS.filter(p=>d['p_'+p[0]]).map(p=>p[0]):[]});cl()})}
 else if(a=='cr'){const c=db.codes.find(c=>c.code==i);await deleteDoc(doc(fs,'users',c.id));lg('إلغاء كود')}
+else if(a=='vw'){view=view=='list'?'tree':'list';localStorage.ah_view=view;render()}
+else if(a=='ea'){exp=new Set(focus?[focus,...desc(focus)]:db.persons.map(p=>p.id));draw()}
+else if(a=='ec'){exp=new Set([focus||R().id]);draw()}
+else if(a=='fo'){focus=i;exp=new Set([i,...desc(i)]);T={x:0,y:0,k:.85};cl();tab='tree';render()}
+else if(a=='unf'){focus=null;exp=new Set([R().id]);render()}
+else if(a=='pw'){if(!adm()){md('<h3>حسابي</h3><p>دخولك بسنة الميلاد والكود. لتغيير الكود اطلب كوداً جديداً من المدير.</p><button data-a="cl">إغلاق</button>');return}
+fm('تغيير كلمة المرور',[{k:'p1',l:'كلمة المرور الجديدة (6 أحرف على الأقل)',v:''}],async d=>{if(d.p1.length<6){alert('كلمة المرور قصيرة');return}try{await updatePassword(auth.currentUser,d.p1);alert('تم تغيير كلمة المرور');cl()}catch(e){alert(e.code=='auth/requires-recent-login'?'سجّل الخروج ثم ادخل من جديد وأعد المحاولة':'تعذّر التغيير')}})}
+else if(a=='cn'){const c=db.codes.find(c=>c.code==i);if(!confirm('إنشاء كود جديد وإلغاء القديم؟'))return;const n=await mk({role:c.role,year:c.year,label:c.label,pid:c.pid||null,perms:c.perms||[]});await deleteDoc(doc(fs,'users',c.id));md(`<h3>الكود الجديد</h3><p>${esc(c.label)}</p><p>المستخدم: <b>${c.year}</b></p><p>الكود: <b style="font-size:22px">${n.code}</b></p><button data-a="cl">إغلاق</button>`)}
+else if(a=='qa'){fm('استفتاء جديد',[{k:'q',l:'السؤال',t:'a',v:''},{k:'pair',l:'نوع الإجابة',t:'s',v:'موافق|رفض',o:[['صح|خطأ','صح / خطأ'],['موافق|رفض','موافق / رفض'],['أقبل|لا أقبل','أقبل / لا أقبل'],['أحضر|لم أحضر','أحضر / لم أحضر']]}],async d=>{await addDoc(collection(fs,'polls'),{q:d.q,pair:d.pair.split('|'),date:today(),ts:Date.now()});lg('استفتاء: '+d.q);note('استفتاء جديد: '+d.q);cl()})}
+else if(a=='vt'){await setDoc(doc(fs,'votes',i+'_'+S.uid),{poll:i,uid:S.uid,c:+k})}
+else if(a=='qd'){if(!confirm('حذف الاستفتاء؟'))return;const b=writeBatch(fs);b.delete(doc(fs,'polls',i));db.votes.filter(x=>x.poll==i).forEach(x=>b.delete(doc(fs,'votes',x.id)));await b.commit()}
 else if(a=='rs'){$('#rb').innerHTML=rep($('#rt').value)}
 else if(a=='rp'){const v=$('#rt').value;$('#pa').innerHTML=`<h2>عائلة أبوهربيد — ${RT[v]}</h2>${rep(v)}<div class="ft">تصميم: سائد أبوهربيد</div>`;print()}});
 document.addEventListener('input',e=>{if(e.target.id!='q')return;const v=e.target.value.trim();$('#res').innerHTML=v?db.persons.filter(p=>p.name.includes(v)).slice(0,8).map(p=>`<button data-a="find" data-i="${p.id}">${esc(p.name)} ${p.year||''}</button>`).join(''):''});
