@@ -39,6 +39,7 @@ label{display:block;margin:8px 0}.ck{display:flex;gap:8px;align-items:center}.ck
 .lr .tg{width:34px;height:34px;padding:0;margin:0;border-radius:8px;flex:none}.lr .dot{width:34px;text-align:center;color:var(--gold);flex:none}
 .nm{flex:1;cursor:pointer}.nm small{color:#7a6a45}#lt{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
 .pi{max-width:100%;max-height:320px;border-radius:8px;margin:6px 0;cursor:zoom-in;display:block}
+.ts{position:fixed;top:70px;right:12px;left:12px;background:var(--grn);color:var(--g2);padding:10px 14px;border-radius:10px;z-index:30;box-shadow:0 3px 10px #0005}
 .pc,.it{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
 .pc h3{margin:0}.sub,.empty{color:#7a6a45}
 #md{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:20;padding:12px}
@@ -70,13 +71,13 @@ table{width:100%;border-collapse:collapse;background:#fff}td,th{border:1px solid
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,createUserWithEmailAndPassword,updatePassword}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import{getFirestore,collection,doc,setDoc,addDoc,updateDoc,deleteDoc,getDoc,onSnapshot,writeBatch}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,collection,doc,setDoc,addDoc,updateDoc,deleteDoc,getDoc,onSnapshot,writeBatch}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 window.onunhandledrejection=e=>alert('تعذّرت العملية: '+(e.reason?.code||e.reason));
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const nd=s=>String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim(),uid=()=>Math.random().toString(36).slice(2,9);
 const CFG={apiKey:"AIzaSyCjQxKhLzb3f81ZUCsCsm9DfPcupo22CVU",authDomain:"abu-harbid-e5802.firebaseapp.com",projectId:"abu-harbid-e5802",storageBucket:"abu-harbid-e5802.firebasestorage.app",messagingSenderId:"991072738560",appId:"1:991072738560:web:6cc3d71afb895a37d8a7e5"};
 const MGR='brns.111@gmail.com',today=()=>new Date().toLocaleDateString('ar');
-const fa=initializeApp(CFG),auth=getAuth(fa),fs=getFirestore(fa);
+const fa=initializeApp(CFG),auth=getAuth(fa),fs=initializeFirestore(fa,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
 let db={persons:[],sens:{},codes:[],posts:{council:[],news:[],mediation:[],forms:[],ads:[]},log:[],notes:[],polls:[],votes:[]},subs=[],seeded=false;
 const desc=id=>db.persons.filter(c=>c.parent==id).flatMap(c=>[c.id,...desc(c.id)]),P=id=>db.persons.find(p=>p.id==id),ch=id=>db.persons.filter(p=>p.parent==id),R=()=>db.persons.find(p=>!p.parent);
 let view=localStorage.ah_view||'list',focus=null,S=null,tab='tree',exp=new Set(),hl=null,T={x:0,y:0,k:.85},drag=false;
@@ -93,7 +94,7 @@ const sub=(n,f)=>subs.push(onSnapshot(collection(fs,n),q=>{f(q.docs.map(d=>({id:
 function listen(){
 sub('persons',a=>{db.persons=a;rebuild();if(S.role=='admin'&&!a.length&&!seeded){seeded=true;setDoc(doc(fs,'persons','root'),{name:'سالم',parent:null,alive:true})}});
 sub('posts',a=>{db.posts={council:[],news:[],mediation:[],forms:[],ads:[]};a.sort((x,y)=>y.ts-x.ts).forEach(p=>db.posts[p.k]?.push(p))});
-sub('polls',a=>db.polls=a.sort((x,y)=>y.ts-x.ts));sub('votes',a=>db.votes=a);sub('notes',a=>db.notes=a.sort((x,y)=>y.d-x.d));
+sub('polls',a=>db.polls=a.sort((x,y)=>y.ts-x.ts));sub('votes',a=>db.votes=a);sub('notes',a=>{db.notes=a.sort((x,y)=>y.d-x.d);alertNew()});
 if(S.role!='member')sub('log',a=>db.log=a.sort((x,y)=>y.ts-x.ts).slice(0,200));
 if(S.role=='admin'){sub('sens',a=>{db.sens={};a.forEach(x=>db.sens[x.id]=x);rebuild()});sub('users',a=>db.codes=a.filter(u=>u.code))}}
 async function mk(o){const code=Math.random().toString(36).slice(2,10).toUpperCase().padEnd(8,'X');
@@ -142,6 +143,10 @@ if(M.size==2){const d=di(),m=mid();zoomAt(d/dp,m[0],m[1]);T.x+=m[0]-pm[0];T.y+=m
 vp.onpointerup=vp.onpointercancel=e=>{M.delete(e.pointerId);setTimeout(()=>drag=false,60)};
 vp.onwheel=e=>{e.preventDefault();zoomAt(e.deltaY<0?1.1:.9,e.clientX,e.clientY)}}
 const zm=f=>{const r=$('#vp').getBoundingClientRect();zoomAt(f,r.left+r.width/2,r.top+r.height/2)};
+/* إشعارات الجهاز */
+let SW=null;if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').then(r=>SW=r).catch(()=>{});
+const toast=t=>{const d=document.createElement('div');d.className='ts';d.textContent='🔔 '+t;d.onclick=()=>d.remove();document.body.append(d);setTimeout(()=>d.remove(),6000)};
+function alertNew(){const last=+localStorage.ah_notified||0,nw=db.notes.filter(n=>n.d>last);if(!last){localStorage.ah_notified=Date.now();return}if(!nw.length)return;localStorage.ah_notified=Math.max(...nw.map(n=>n.d));nw.reverse().forEach(n=>{toast(n.t);if('Notification' in window&&Notification.permission=='granted'&&SW)SW.showNotification('عائلة أبوهربيد',{body:n.t,icon:'icon-192.png',tag:n.id,dir:'rtl',lang:'ar'})})}
 /* إكمال الاسم تلقائياً */
 const fw=n=>String(n||'').trim().split(/\s+/)[0]||'',fn=p=>p?(p.first||fw(p.name)):'';
 const fullName=(first,pid)=>{const f=P(pid),g=f&&P(f.parent);return [String(first).trim(),fn(f),fn(g),'أبوهربيد'].filter(Boolean).join(' ')};
@@ -176,9 +181,9 @@ const RT={reg:'سجل الأنساب (الآباء والأبناء والأحف
 function rep(t){const A=db.persons,tb=(h,r)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map(x=>'<tr>'+x.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')}</table>`;
 if(t=='reg')return reg();if(t=='tree')return treeHtml();
 if(t=='men')return menRep();
-if(t=='married')return tb(['الاسم الرباعي','رقم الهوية','اسم الزوجة','رقم هوية الزوجة','عدد الأفراد'],A.filter(p=>p.alive!==false&&String(p.sp||'').trim()).map(p=>[p.name,p.idn,p.sp,p.spid,p.fam]));
-if(t=='women')return tb(['اسم الزوجة','عدد الأفراد','اسم الزوج ثلاثيًا','رقم هويتها'],A.filter(p=>p.sp).map(p=>[p.sp,p.fam,p.name.split(/\s+/).slice(0,3).join(' '),p.spid]));
-if(t=='alive'||t=='dead')return tb(['الاسم','سنة الميلاد','الحي'],A.filter(p=>(p.alive!==false)==(t=='alive')).map(p=>[p.name,p.year,p.hood]));
+if(t=='married')return tb(['الاسم الرباعي','رقم الهوية','اسم الزوجة','رقم هوية الزوجة','عدد الأفراد','رقم الجوال'],A.filter(p=>p.alive!==false&&String(p.sp||'').trim()).map(p=>[p.name,p.idn,p.sp,p.spid,p.fam,p.phone]));
+if(t=='women')return tb(['اسم الزوجة','عدد الأفراد','اسم الزوج ثلاثيًا','رقم هويتها','رقم الجوال'],A.filter(p=>p.sp).map(p=>[p.sp,p.fam,p.name.split(/\s+/).slice(0,3).join(' '),p.spid,p.phone]));
+if(t=='alive'||t=='dead'){const L=t=='alive';return tb(['الاسم','سنة الميلاد','الحي',...(L?['رقم الجوال']:[])],A.filter(p=>(p.alive!==false)==L).map(p=>[p.name,p.year,p.hood,...(L?[p.phone]:[])]))}
 return tb(['الحي','الاسم','رقم الجوال'],[...A].sort((a,b)=>(a.hood||'').localeCompare(b.hood||'','ar')).map(p=>[p.hood||'—',p.name,p.phone]))}
 /* أحداث */
 document.addEventListener('click',async e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,i=t.dataset.i,k=t.dataset.k;
@@ -189,7 +194,8 @@ else if(a=='sp')showP(i);else if(a=='cl'||a=='bg')cl();
 else if(a=='zi')zm(1.2);else if(a=='zo')zm(.8);else if(a=='fit')fit();
 else if(a=='find'){focus=null;let p=P(i);hl=i;while(p&&p.parent){exp.add(p.parent);p=P(p.parent)}draw();$('#res').innerHTML='';showP(i)}
 else if(a=='out'){await signOut(auth);location.reload()}
-else if(a=='bell'){localStorage.ah_seen=Date.now();md(`<h3>الإشعارات</h3>${db.notes.map(n=>`<div class="it">${esc(n.t)}<br><small>${new Date(n.d).toLocaleString('ar')}</small></div>`).join('')||'<p class="empty">لا إشعارات.</p>'}<button data-a="cl">إغلاق</button>`);$('#bc').textContent=''}
+else if(a=='bell'){localStorage.ah_seen=Date.now();md(`<h3>الإشعارات</h3>${db.notes.map(n=>`<div class="it">${esc(n.t)}<br><small>${new Date(n.d).toLocaleString('ar')}</small></div>`).join('')||'<p class="empty">لا إشعارات.</p>'}${'Notification' in window&&Notification.permission!='granted'?'<button class="btn" data-a="nt">🔔 تفعيل إشعارات الجهاز</button> ':''}<button data-a="cl">إغلاق</button>`);$('#bc').textContent=''}
+else if(a=='nt'){const r=await Notification.requestPermission();alert(r=='granted'?'تم تفعيل إشعارات الجهاز':'لم يُسمح بالإشعارات');cl()}
 else if(a=='pa'){const par=i||R().id;fm('إضافة فرد',[{k:'parent',l:'الأب',t:'s',v:par,o:db.persons.map(p=>[p.id,p.name])},...PF({}).map((x,i)=>i?x:{...x,l:'الاسم الأول فقط (يكتمل تلقائياً بالأب والجد وأبوهربيد)'})],async d=>{const{idn,spid,phone,...pub}=clean(d),id=uid();pub.first=pub.name.trim();pub.name=fullName(pub.first,pub.parent);await setDoc(doc(fs,'persons',id),pub);await setDoc(doc(fs,'sens',id),{idn,spid,phone});exp.add(d.parent);lg('إضافة فرد: '+pub.name);cl()})}
 else if(a=='pe'){const p=P(i);fm('تعديل البيانات',PF(p),async d=>{const{idn,spid,phone,...pub}=clean(d);if(pub.name!==p.name)pub.first=fw(pub.name);await updateDoc(doc(fs,'persons',i),pub);if(adm())await setDoc(doc(fs,'sens',i),{idn,spid,phone});lg('تعديل بيانات: '+p.name);cl()})}
 else if(a=='pd'){const p=P(i);if(!confirm('حذف '+p.name+' وجميع أبنائه؟'))return;const del=new Set([i]);let g=1;while(g){g=0;db.persons.forEach(x=>{if(del.has(x.parent)&&!del.has(x.id)){del.add(x.id);g=1}})}const b=writeBatch(fs);del.forEach(x=>{b.delete(doc(fs,'persons',x));b.delete(doc(fs,'sens',x))});await b.commit();lg('حذف: '+p.name);cl()}
