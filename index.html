@@ -38,6 +38,7 @@ label{display:block;margin:8px 0}.ck{display:flex;gap:8px;align-items:center}.ck
 .lr{display:flex;align-items:center;gap:8px;padding:5px 4px;border-radius:8px}.lr.hit{background:var(--g2)}
 .lr .tg{width:34px;height:34px;padding:0;margin:0;border-radius:8px;flex:none}.lr .dot{width:34px;text-align:center;color:var(--gold);flex:none}
 .nm{flex:1;cursor:pointer}.nm small{color:#7a6a45}#lt{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
+.pi{max-width:100%;max-height:320px;border-radius:8px;margin:6px 0;cursor:zoom-in;display:block}
 .pc,.it{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
 .pc h3{margin:0}.sub,.empty{color:#7a6a45}
 #md{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:20;padding:12px}
@@ -48,7 +49,10 @@ table{width:100%;border-collapse:collapse;background:#fff}td,th{border:1px solid
 #dsg{position:fixed;left:10px;bottom:6px;font-size:13px;color:var(--gold);z-index:6}
 #pa{display:none}
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.g .it{text-align:center}.g .it span{font-size:34px}
-@media print{body>*{display:none!important}#pa{display:block!important}#pa .ft{position:fixed;left:0;bottom:0}}
+@page{size:A4 landscape;margin:10mm}
+.rg{padding:2px 0;border-bottom:1px dotted var(--line)}.rg .no{color:var(--gold);font-weight:700}.dd{font-size:10px;color:#777;font-style:normal}
+.cnt{font-size:11px;background:#f1e8d0;border-radius:10px;padding:0 6px;margin-top:2px;color:var(--ink)}#rb{overflow-x:auto}
+@media print{.regw{column-count:2;column-gap:24px}.rg{break-inside:avoid}#pa .cd{min-width:0;padding:3px 7px;font-size:12px}#pa .cd small{font-size:10px}body>*{display:none!important}#pa{display:block!important}#pa .ft{position:fixed;left:0;bottom:0}}
 </style></head><body>
 <div id="lg" style="max-width:360px;margin:12vh auto;padding:20px">
 <h1 style="text-align:center">عائلة أبوهربيد</h1>
@@ -119,7 +123,7 @@ forms:()=>posts('forms','الأكواد التلقائية والنماذج','ن
 guide:()=>`<h2>إرشادات استخدام التطبيق</h2><div class="g">${[['🔑','سجّل الدخول','اكتب سنة ميلادك والكود الذي أعطاك إياه المدير.'],['🌳','تصفّح الشجرة','اضغط (+) لفتح فرع و(−) لإغلاقه.'],['🤏','كبّر وحرّك','باصبعين للتكبير، وبإصبع واحد للتحريك، ونقرتان على الفراغ لملاءمة الشجرة. أو بدّل بين المخطط والقائمة.'],['🔍','ابحث','اكتب اسم الفرد واضغط على النتيجة.'],['👤','اعرض البيانات','اضغط على بطاقة الفرد لترى بياناته وأبناءه.'],['🔔','تابع الإشعارات','الجرس يخبرك بكل جديد.'],['☎','تواصل مع المدير','زر واتساب العائم يفتح محادثة مباشرة.'],['📲','ثبّت التطبيق','من قائمة المتصفح: إضافة إلى الشاشة الرئيسية.']].map(s=>`<div class="it"><span>${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('')}</div>`,
 rep:()=>`<h2>الكشوف والطباعة</h2><select id="rt">${Object.entries(RT).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><div class="row"><button class="btn" data-a="rs">عرض</button><button data-a="rp">طباعة</button></div><div id="rb"></div>`,
 log:()=>`<h2>سجل التعديلات</h2>${db.log.map(l=>`<div class="it"><b>${esc(l.w)}</b> — ${esc(l.t)}<br><small>${l.d}</small></div>`).join('')||'<p class="empty">لا توجد تعديلات بعد.</p>'}`};
-function posts(k,t,d){const a=db.posts[k];return `<h2>${t}</h2><p class="sub">${d}</p>${can(k)?`<button class="btn" data-a="ta" data-k="${k}">+ إضافة</button>`:''}`+(a.map(p=>`<article class="pc"><h3>${esc(p.title)}</h3><p>${esc(p.text).replace(/\n/g,'<br>')}</p><small>${p.date}</small>${can(k)?`<div class="row"><button data-a="te" data-k="${k}" data-i="${p.id}">تعديل</button>${adm()?`<button data-a="td" data-k="${k}" data-i="${p.id}">حذف</button>`:''}</div>`:''}</article>`).join('')||`<p class="empty">لا توجد عناصر بعد.${can(k)?' اضغط «إضافة» لنشر أول عنصر.':''}</p>`)}
+function posts(k,t,d){const a=db.posts[k];return `<h2>${t}</h2><p class="sub">${d}</p>${can(k)?`<button class="btn" data-a="ta" data-k="${k}">+ إضافة</button>`:''}`+(a.map(p=>`<article class="pc"><h3>${esc(p.title)}</h3>${p.img?`<img class="pi" src="${p.img}" data-a="im" data-k="${k}" data-i="${p.id}">`:''}<p>${esc(p.text).replace(/\n/g,'<br>')}</p><small>${p.date}</small>${can(k)?`<div class="row"><button data-a="te" data-k="${k}" data-i="${p.id}">تعديل</button>${adm()?`<button data-a="td" data-k="${k}" data-i="${p.id}">حذف</button>`:''}</div>`:''}</article>`).join('')||`<p class="empty">لا توجد عناصر بعد.${can(k)?' اضغط «إضافة» لنشر أول عنصر.':''}</p>`)}
 function pl(q){return db.persons.filter(p=>p.name.includes(q)).map(p=>`<div class="it" data-a="sp" data-i="${p.id}" style="cursor:pointer"><b>${esc(p.name)}</b> <small>${p.year||''} ${p.alive===false?'(متوفى)':''}</small></div>`).join('')}
 function dl(q){return db.persons.filter(p=>[p.name,p.job,p.skills,p.hood].join(' ').includes(q)).map(p=>`<div class="it" data-a="sp" data-i="${p.id}" style="cursor:pointer"><b>${esc(p.name)}</b><br><small>${esc([p.job,p.skills,p.hood].filter(Boolean).join(' • '))}</small></div>`).join('')||'<p class="empty">لا نتائج.</p>'}
 function codesPanel(){return `<h2>أكواد الدخول</h2><button class="btn" data-a="ca">+ كود جديد</button>${db.codes.map(c=>`<div class="it">${esc(c.label||'')} — ${c.role=='sup'?'مشرف':'عضو'}<br>المستخدم: <b>${c.year}</b> • الكود: <b>${c.code}</b> <button data-a="cn" data-i="${c.code}">تغيير الكود</button> <button data-a="cr" data-i="${c.code}">إلغاء</button></div>`).join('')||'<p class="empty">لم تُنشأ أكواد بعد.</p>'}`}
@@ -138,9 +142,12 @@ if(M.size==2){const d=di(),m=mid();zoomAt(d/dp,m[0],m[1]);T.x+=m[0]-pm[0];T.y+=m
 vp.onpointerup=vp.onpointercancel=e=>{M.delete(e.pointerId);setTimeout(()=>drag=false,60)};
 vp.onwheel=e=>{e.preventDefault();zoomAt(e.deltaY<0?1.1:.9,e.clientX,e.clientY)}}
 const zm=f=>{const r=$('#vp').getBoundingClientRect();zoomAt(f,r.left+r.width/2,r.top+r.height/2)};
+/* صور */
+const shrink=(f,m,q)=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',q))};im.onerror=no;im.src=r.result};r.onerror=no;r.readAsDataURL(f)});
+async function img(f){for(const[m,q]of[[900,.72],[600,.6],[400,.5]]){const u=await shrink(f,m,q);if(u.length<700000)return u}throw{code:'الصورة كبيرة جدًا'}}
 /* نوافذ */
 const md=h=>{$('#md').innerHTML=`<div class="mc">${h}</div>`;$('#md').hidden=false},cl=()=>$('#md').hidden=true;
-function fm(t,f,ok){md(`<h3>${t}</h3><form>${f.map(x=>x.t=='c'?`<label class="ck"><input type="checkbox" name="${x.k}" ${x.v?'checked':''}>${x.l}</label>`:x.t=='s'?`<label>${x.l}<select name="${x.k}">${x.o.map(o=>`<option value="${o[0]}" ${o[0]==x.v?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`:x.t=='a'?`<label>${x.l}<textarea name="${x.k}" rows="5">${esc(x.v)}</textarea></label>`:`<label>${x.l}<input name="${x.k}" value="${esc(x.v)}"></label>`).join('')}<div class="row"><button class="btn">حفظ</button><button type="button" data-a="cl">إلغاء</button></div></form>`);
+function fm(t,f,ok){md(`<h3>${t}</h3><form>${f.map(x=>x.t=='f'?`<label>${x.l}<input type="file" name="${x.k}" accept="image/*"></label>`:x.t=='c'?`<label class="ck"><input type="checkbox" name="${x.k}" ${x.v?'checked':''}>${x.l}</label>`:x.t=='s'?`<label>${x.l}<select name="${x.k}">${x.o.map(o=>`<option value="${o[0]}" ${o[0]==x.v?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`:x.t=='a'?`<label>${x.l}<textarea name="${x.k}" rows="5">${esc(x.v)}</textarea></label>`:`<label>${x.l}<input name="${x.k}" value="${esc(x.v)}"></label>`).join('')}<div class="row"><button class="btn">حفظ</button><button type="button" data-a="cl">إلغاء</button></div></form>`);
 $('#md form').onsubmit=e=>{e.preventDefault();const d={};new FormData(e.target).forEach((v,k)=>d[k]=v);f.filter(x=>x.t=='c').forEach(x=>d[x.k]=e.target[x.k].checked);ok(d)}}
 const PF=p=>[{k:'name',l:'الاسم الرباعي',v:p.name},{k:'year',l:'سنة الميلاد',v:p.year},{k:'alive',l:'على قيد الحياة',t:'c',v:p.alive!==false},{k:'idn',l:'رقم الهوية',v:p.idn},{k:'phone',l:'رقم الجوال',v:p.phone},{k:'fam',l:'عدد أفراد الأسرة',v:p.fam},{k:'sp',l:'اسم الزوجة',v:p.sp},{k:'spid',l:'رقم هوية الزوجة',v:p.spid},{k:'hood',l:'الحي',v:p.hood},{k:'job',l:'المهنة',v:p.job},{k:'skills',l:'المهارات والخبرات',v:p.skills}];
 const clean=d=>{d.year=nd(d.year);d.fam=nd(d.fam);d.idn=nd(d.idn);d.spid=nd(d.spid);d.phone=nd(d.phone);return d};
@@ -149,9 +156,17 @@ md(`<h3>${esc(p.name)}</h3><dl>${r('سنة الميلاد',p.year)}${r('الحا
 ${f?`<p>الأب: <button data-a="sp" data-i="${f.id}">${esc(f.name)}</button></p>`:''}
 ${k.length?`<p>الأبناء:</p>${k.map(c=>`<button data-a="sp" data-i="${c.id}">${esc(c.name)}</button> `).join('')}`:''}
 <div class="row" style="flex-wrap:wrap">${k.length?`<button data-a="fo" data-i="${id}">سلسلته كاملة (${desc(id).length})</button>`:''}${can('people')?`<button data-a="pe" data-i="${id}">تعديل</button>`:''}${adm()?`<button data-a="pa" data-i="${id}">+ ابن</button><button data-a="pc" data-i="${id}">كود الدخول</button>${p.parent?`<button data-a="pd" data-i="${id}">حذف</button>`:''}`:''}<button data-a="cl">إغلاق</button></div>`)}
+/* طباعة الشجرة والسجل */
+const sn=n=>String(n||'').trim().split(/\s+/).slice(0,2).join(' '),kd=id=>ch(id).sort((a,b)=>(+a.year||9999)-(+b.year||9999));
+const tag=p=>`<span class="yr">${p.year||''}</span>${p.alive===false?' <small class="dd">متوفى</small>':''}`,LG='<p class="sub">الرقم بعد كلمة «ذرية» = عدد الأبناء والأحفاد وما بعدهم.</p>';
+function reg(){const o=[],w=(p,no,l)=>{const n=desc(p.id).length;o.push(`<div class="rg" style="margin-right:${l*22}px"><span class="no">${no}</span> <b>${esc(sn(p.name))}</b> ${tag(p)}${n?` <span class="cnt">ذرية: ${n}</span>`:''}</div>`);kd(p.id).forEach((c,i)=>w(c,no+'.'+(i+1),l+1))};if(R())w(R(),'1',0);return LG+'<div class="regw">'+o.join('')+'</div>'}
+function pnode(p){const k=kd(p.id),n=desc(p.id).length;return `<li><div class="cd"><b>${esc(sn(p.name))}</b><small>${tag(p)}</small>${n?`<span class="cnt">ذرية: ${n}</span>`:''}</div>${k.length?'<ul>'+k.map(pnode).join('')+'</ul>':''}</li>`}
+const treeHtml=()=>LG+`<div class="tr ptree"><ul>${R()?pnode(R()):''}</ul></div>`;
+function fitTree(){const pa=$('#pa'),t=pa.querySelector('.ptree');if(!t)return;pa.style.cssText='display:block;position:absolute;visibility:hidden;width:max-content';const w=t.querySelector('ul').offsetWidth;pa.removeAttribute('style');t.style.zoom=Math.max(.2,Math.min(1,1030/w))}
 /* كشوف */
-const RT={men:'كشف الرجال',women:'كشف النساء',alive:'كشف الأحياء',dead:'كشف الأموات',hood:'كشف الأحياء السكنية'};
+const RT={reg:'سجل الأنساب (الآباء والأبناء والأحفاد)',tree:'شجرة العائلة (مخطط للطباعة)',men:'كشف الرجال',women:'كشف النساء',alive:'كشف الأحياء',dead:'كشف الأموات',hood:'كشف الأحياء السكنية'};
 function rep(t){const A=db.persons,tb=(h,r)=>`<table><tr>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map(x=>'<tr>'+x.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')}</table>`;
+if(t=='reg')return reg();if(t=='tree')return treeHtml();
 if(t=='men')return tb(['الاسم الرباعي','رقم الهوية','عدد الأفراد','رقم الجوال'],A.map(p=>[p.name,p.idn,p.fam,p.phone]));
 if(t=='women')return tb(['اسم الزوجة','عدد الأفراد','اسم الزوج ثلاثيًا','رقم هويتها'],A.filter(p=>p.sp).map(p=>[p.sp,p.fam,p.name.split(/\s+/).slice(0,3).join(' '),p.spid]));
 if(t=='alive'||t=='dead')return tb(['الاسم','سنة الميلاد','الحي'],A.filter(p=>(p.alive!==false)==(t=='alive')).map(p=>[p.name,p.year,p.hood]));
@@ -170,7 +185,8 @@ else if(a=='pa'){const par=i||R().id;fm('إضافة فرد',[{k:'parent',l:'ال
 else if(a=='pe'){const p=P(i);fm('تعديل البيانات',PF(p),async d=>{const{idn,spid,phone,...pub}=clean(d);await updateDoc(doc(fs,'persons',i),pub);if(adm())await setDoc(doc(fs,'sens',i),{idn,spid,phone});lg('تعديل بيانات: '+p.name);cl()})}
 else if(a=='pd'){const p=P(i);if(!confirm('حذف '+p.name+' وجميع أبنائه؟'))return;const del=new Set([i]);let g=1;while(g){g=0;db.persons.forEach(x=>{if(del.has(x.parent)&&!del.has(x.id)){del.add(x.id);g=1}})}const b=writeBatch(fs);del.forEach(x=>{b.delete(doc(fs,'persons',x));b.delete(doc(fs,'sens',x))});await b.commit();lg('حذف: '+p.name);cl()}
 else if(a=='pc'){const p=P(i);if(!p.year){alert('أضف سنة الميلاد للفرد أولًا');return}let c=db.codes.find(c=>c.pid==i);if(!c)c=await mk({role:'member',year:p.year,label:p.name,pid:i,perms:[]});md(`<h3>كود الدخول</h3><p>${esc(p.name)}</p><p>اسم المستخدم (سنة الميلاد): <b>${c.year}</b></p><p>الكود: <b style="font-size:22px">${c.code}</b></p><button data-a="cn" data-i="${c.code}">تغيير الكود</button> <button data-a="cl">إغلاق</button>`)}
-else if(a=='ta'||a=='te'){const o=a=='te'?db.posts[k].find(x=>x.id==i):{title:'',text:''};fm(a=='te'?'تعديل':'إضافة',[{k:'title',l:'العنوان',v:o.title},{k:'text',l:'النص',t:'a',v:o.text}],async d=>{if(a=='te')await updateDoc(doc(fs,'posts',i),{title:d.title,text:d.text,date:today()});else await addDoc(collection(fs,'posts'),{k,...d,date:today(),ts:Date.now()});lg((a=='te'?'تعديل: ':'إضافة: ')+d.title);note((a=='te'?'تم تحديث: ':'جديد: ')+d.title);cl()})}
+else if(a=='ta'||a=='te'){const o=a=='te'?db.posts[k].find(x=>x.id==i):{title:'',text:'',img:''};fm(a=='te'?'تعديل':'إضافة',[{k:'title',l:'العنوان',v:o.title},{k:'text',l:'النص',t:'a',v:o.text},{k:'img',l:'صورة (اختياري)',t:'f'},...(o.img?[{k:'rm',l:'حذف الصورة الحالية',t:'c',v:false}]:[])],async d=>{const im=d.img&&d.img.size?await img(d.img):null,pic=d.rm?'':(im||o.img||'');if(a=='te')await updateDoc(doc(fs,'posts',i),{title:d.title,text:d.text,img:pic,date:today()});else await addDoc(collection(fs,'posts'),{k,title:d.title,text:d.text,img:pic,date:today(),ts:Date.now()});lg((a=='te'?'تعديل: ':'إضافة: ')+d.title);note((a=='te'?'تم تحديث: ':'جديد: ')+d.title);cl()})}
+else if(a=='im'){md(`<img src="${db.posts[k].find(x=>x.id==i).img}" style="width:100%;border-radius:8px"><div class="row"><button data-a="cl">إغلاق</button></div>`)}
 else if(a=='td'){if(!confirm('حذف العنصر؟'))return;await deleteDoc(doc(fs,'posts',i));lg('حذف عنصر')}
 else if(a=='ca'){fm('كود جديد',[{k:'label',l:'الاسم',v:''},{k:'year',l:'سنة الميلاد (اسم المستخدم)',v:''},{k:'role',l:'النوع',t:'s',v:'member',o:[['member','عضو (مشاهدة فقط)'],['sup','مشرف']]},...PERMS.map(p=>({k:'p_'+p[0],l:'صلاحية: '+p[1],t:'c',v:false}))],async d=>{if(!nd(d.year)){alert('أدخل سنة الميلاد');return}await mk({role:d.role,year:nd(d.year),label:d.label,perms:d.role=='sup'?PERMS.filter(p=>d['p_'+p[0]]).map(p=>p[0]):[]});cl()})}
 else if(a=='cr'){const c=db.codes.find(c=>c.code==i);await deleteDoc(doc(fs,'users',c.id));lg('إلغاء كود')}
@@ -186,7 +202,7 @@ else if(a=='qa'){fm('استفتاء جديد',[{k:'q',l:'السؤال',t:'a',v:'
 else if(a=='vt'){await setDoc(doc(fs,'votes',i+'_'+S.uid),{poll:i,uid:S.uid,c:+k})}
 else if(a=='qd'){if(!confirm('حذف الاستفتاء؟'))return;const b=writeBatch(fs);b.delete(doc(fs,'polls',i));db.votes.filter(x=>x.poll==i).forEach(x=>b.delete(doc(fs,'votes',x.id)));await b.commit()}
 else if(a=='rs'){$('#rb').innerHTML=rep($('#rt').value)}
-else if(a=='rp'){const v=$('#rt').value;$('#pa').innerHTML=`<h2>عائلة أبوهربيد — ${RT[v]}</h2>${rep(v)}<div class="ft">تصميم: سائد أبوهربيد</div>`;print()}});
+else if(a=='rp'){const v=$('#rt').value;$('#pa').innerHTML=`<h2>عائلة أبوهربيد — ${RT[v]}</h2>${rep(v)}<div class="ft">تصميم: سائد أبوهربيد</div>`;fitTree();print()}});
 document.addEventListener('input',e=>{if(e.target.id!='q')return;const v=e.target.value.trim();$('#res').innerHTML=v?db.persons.filter(p=>p.name.includes(v)).slice(0,8).map(p=>`<button data-a="find" data-i="${p.id}">${esc(p.name)} ${p.year||''}</button>`).join(''):''});
 /* تثبيت كتطبيق */
 try{const m={name:'عائلة أبوهربيد',short_name:'أبوهربيد',lang:'ar',dir:'rtl',display:'standalone',background_color:'#fbf7ee',theme_color:'#23382c',start_url:location.href,icons:[{src:new URL('icon-192.png',location.href).href,sizes:'192x192',type:'image/png'}]};
