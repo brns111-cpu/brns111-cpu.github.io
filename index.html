@@ -40,6 +40,7 @@ label{display:block;margin:8px 0}.ck{display:flex;gap:8px;align-items:center}.ck
 .nm{flex:1;cursor:pointer}.nm small{color:#7a6a45}#lt{margin-top:8px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px;overflow-x:auto}
 .pi{max-width:100%;max-height:320px;border-radius:8px;margin:6px 0;cursor:zoom-in;display:block}
 .ts{position:fixed;top:70px;right:12px;left:12px;background:var(--grn);color:var(--g2);padding:10px 14px;border-radius:10px;z-index:30;box-shadow:0 3px 10px #0005}
+.cd.anc{border-style:dashed;background:#faf6ec}
 .pc,.it{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
 .pc h3{margin:0}.sub,.empty{color:#7a6a45}
 #md{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:20;padding:12px}
@@ -174,21 +175,24 @@ const sn=n=>String(n||'').trim().split(/\s+/).slice(0,2).join(' '),kd=id=>ch(id)
 const tag=p=>`<span class="yr">${p.year||''}</span>${p.alive===false?' <small class="dd">متوفى</small>':''}`,LG='<p class="sub">الرقم بعد كلمة «ذرية» = عدد الأبناء والأحفاد وما بعدهم.</p>';
 function reg(){const o=[],w=(p,no,l)=>{const n=desc(p.id).length;o.push(`<div class="rg" style="margin-right:${l*22}px"><span class="no">${no}</span> <b>${esc(sn(p.name))}</b> ${tag(p)}${n?` <span class="cnt">ذرية: ${n}</span>`:''}</div>`);kd(p.id).forEach((c,i)=>w(c,no+'.'+(i+1),l+1))};if(R())w(R(),'1',0);return LG+'<div class="regw">'+o.join('')+'</div>'}
 function pnode(p){const k=kd(p.id),n=desc(p.id).length;return `<li><div class="cd"><b>${esc(sn(p.name))}</b><small>${tag(p)}</small>${n?`<span class="cnt">ذرية: ${n}</span>`:''}</div>${k.length?'<ul>'+k.map(pnode).join('')+'</ul>':''}</li>`}
+const ancs=(id,lv)=>{const a=[];let p=P(P(id).parent);while(p&&a.length<lv){a.unshift(p);p=P(p.parent)}return a};
+const anode=(p,c)=>c.length?`<li><div class="cd anc"><b>${esc(sn(c[0].name))}</b><small>${tag(c[0])}</small></div><ul>${anode(p,c.slice(1))}</ul></li>`:pnode(p);
 const selIds=()=>[...document.querySelectorAll('.pkc:checked')].map(c=>c.value);
-const treeHtml=()=>{const ids=selIds();if(!ids.length)return '<p class="empty">حدّد من القائمة شخصاً أو أكثر ليُطبع مع ذريته.</p>';return LG+ids.map(id=>`<div class="tr ptree"><h3>${esc(sn(P(id).name))} وذريته</h3><ul>${pnode(P(id))}</ul></div>`).join('')};
+const treeHtml=()=>{const ids=selIds();if(!ids.length)return '<p class="empty">حدّد من القائمة شخصاً أو أكثر ليُطبع مع ذريته.</p>';return LG+ids.map(id=>`<div class="tr ptree"><h3>${esc(sn(P(id).name))} وذريته</h3><ul>${anode(P(id),ancs(id,+($('#anc')?.value||0)))}</ul></div>`).join('')};
 function menRep(){let n=0;const rows=[],w=p=>{const k=kd(p.id);if(k.length){rows.push(`<tr class="fh"><td colspan="5"><b>الأب: ${esc(p.name)}</b> <small>(${k.length} أبناء)</small></td></tr>`);k.forEach(c=>rows.push(`<tr><td>${++n}</td><td>↳ ${esc(c.name)}</td><td>${esc(c.idn)}</td><td>${esc(c.fam)}</td><td>${esc(c.phone)}</td></tr>`));k.forEach(w)}};if(R())w(R());return `<table><tr><th>م</th><th>الاسم الرباعي</th><th>رقم الهوية</th><th>عدد الأفراد</th><th>رقم الجوال</th></tr>${rows.join('')}</table>`}
 function fitTree(o){const pa=$('#pa'),ts=pa.querySelectorAll('.ptree');if(!ts.length)return;pa.style.cssText='display:block;position:absolute;visibility:hidden;width:max-content';const W=o=='portrait'?700:1030;ts.forEach(t=>{t.style.zoom=Math.max(.2,Math.min(1,W/t.querySelector('ul').offsetWidth))});pa.removeAttribute('style')}
-function pick(){const el=$('#pk');if(!el)return;el.innerHTML=$('#rt').value=='tree'?`<input id="pks" placeholder="ابحث عن اسم لتحديده"><div id="pkl" style="max-height:240px;overflow:auto;margin:6px 0">${db.persons.filter(p=>ch(p.id).length).map(p=>`<label class="ck"><input type="checkbox" class="pkc" value="${p.id}"> ${esc(p.name)} <small>(ذرية ${desc(p.id).length})</small></label>`).join('')}</div>`:''}
+function pick(){const el=$('#pk');if(!el)return;el.innerHTML=$('#rt').value=='tree'?`<input id="pks" placeholder="ابحث عن اسم لتحديده"><div id="pkl" style="max-height:240px;overflow:auto;margin:6px 0">${db.persons.filter(p=>ch(p.id).length).map(p=>`<label class="ck"><input type="checkbox" class="pkc" value="${p.id}"> ${esc(p.name)} <small>(ذرية ${desc(p.id).length})</small></label>`).join('')}</div><label>إدراج الأجداد فوق الشخص عند الطباعة<select id="anc"><option value="0">بدون</option><option value="1">الأب فقط</option><option value="2">الأب والجد</option><option value="99">كل الأجداد حتى الجد الأعلى</option></select></label>`:''}
 document.addEventListener('change',e=>{if(e.target.id=='rt')pick()});
 document.addEventListener('input',e=>{if(e.target.id=='pks'){const v=e.target.value.trim();document.querySelectorAll('#pkl label').forEach(l=>l.hidden=!l.textContent.includes(v))}});
 /* كشوف */
-const RT={reg:'سجل الأنساب (الآباء والأبناء والأحفاد)',tree:'شجرة العائلة (مخطط للطباعة)',men:'كشف الرجال (كل أب وأبناؤه)',married:'كشف المتزوجين الأحياء',women:'كشف النساء',alive:'كشف الأحياء',dead:'كشف الأموات',hood:'كشف الأحياء السكنية'};
+const RT={reg:'سجل الأنساب (الآباء والأبناء والأحفاد)',tree:'شجرة العائلة (مخطط للطباعة)',men:'كشف الرجال (كل أب وأبناؤه)',married:'كشف المتزوجين الأحياء',women:'كشف النساء',alive:'كشف الأحياء (دون من في الخارج)',abroad:'كشف المقيمين في الخارج',dead:'كشف الأموات',hood:'كشف الأحياء السكنية'};
 function rep(t){const A=db.persons,tb=(h,r)=>`<table><tr><th>م</th>${h.map(x=>`<th>${x}</th>`).join('')}</tr>${r.map((x,i)=>'<tr><td>'+(i+1)+'</td>'+x.map(c=>`<td>${esc(c)}</td>`).join('')+'</tr>').join('')}</table>`;
 if(t=='reg')return reg();if(t=='tree')return treeHtml();
 if(t=='men')return menRep();
 if(t=='married')return tb(['الاسم الرباعي','رقم الهوية','اسم الزوجة','رقم هوية الزوجة','عدد الأفراد','رقم الجوال'],A.filter(p=>p.alive!==false&&String(p.sp||'').trim()).map(p=>[p.name,p.idn,p.sp,p.spid,p.fam,p.phone]));
 if(t=='women')return tb(['اسم الزوجة','عدد الأفراد','اسم الزوج ثلاثيًا','رقم هويتها','رقم الجوال'],A.filter(p=>p.sp).map(p=>[p.sp,p.fam,p.name.split(/\s+/).slice(0,3).join(' '),p.spid,p.phone]));
-if(t=='alive'||t=='dead'){const L=t=='alive';return tb(['الاسم','سنة الميلاد','الحي',...(L?['رقم الجوال']:[])],A.filter(p=>(p.alive!==false)==L).map(p=>[p.name,p.year,p.hood,...(L?[p.phone]:[])]))}
+if(t=='abroad')return tb(['الاسم','سنة الميلاد','الحي','رقم الجوال'],A.filter(p=>p.alive!==false&&p.abroad).map(p=>[p.name,p.year,p.hood,p.phone]));
+if(t=='alive'||t=='dead'){const L=t=='alive';return tb(['الاسم','سنة الميلاد','الحي',...(L?['رقم الجوال']:[])],A.filter(p=>(p.alive!==false)==L&&!(L&&p.abroad)).map(p=>[p.name,p.year,p.hood,...(L?[p.phone]:[])]))}
 return tb(['الحي','الاسم','رقم الجوال'],[...A].sort((a,b)=>(a.hood||'').localeCompare(b.hood||'','ar')).map(p=>[p.hood||'—',p.name,p.phone]))}
 /* أحداث */
 document.addEventListener('click',async e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a,i=t.dataset.i,k=t.dataset.k;
