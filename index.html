@@ -42,6 +42,7 @@ label{display:block;margin:8px 0}.ck{display:flex;gap:8px;align-items:center}.ck
 .ts{position:fixed;top:70px;right:12px;left:12px;background:var(--grn);color:var(--g2);padding:10px 14px;border-radius:10px;z-index:30;box-shadow:0 3px 10px #0005}
 .cd.anc{border-style:dashed;background:#faf6ec}
 .sts{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}.sc{padding:10px 4px;text-align:center;font-size:15px;line-height:1.3}.sc b{font-size:28px}
+.mem-h{background:var(--grn);color:var(--g2);text-align:center;padding:20px 12px;border-radius:16px}.mem-h h2{margin:6px 0}.mem-h p{color:#fff;margin:0}
 .pc,.it{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 14px;margin:10px 0}
 .pc h3{margin:0}.sub,.empty{color:#7a6a45}
 #md{position:fixed;inset:0;background:#0007;display:flex;align-items:center;justify-content:center;z-index:20;padding:12px}
@@ -52,6 +53,31 @@ table{width:100%;border-collapse:collapse;background:#fff}td,th{border:1px solid
 #dsg{position:fixed;left:10px;bottom:6px;font-size:13px;color:var(--gold);z-index:6}
 #pa{display:none}
 .g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.g .it{text-align:center}.g .it span{font-size:34px}
+/* ===== تصميم عصري: ألوان مريحة + لون لكل تبويب ===== */
+:root{--paper:#f5f2eb;--ink:#22302c;--grn:#1d4a38;--line:#e6dfcf;--ac:#2e7d5b}
+body{font-size:17px;line-height:1.85;background:var(--paper)}
+header{background:linear-gradient(135deg,#173a2c,#26604a);box-shadow:0 2px 12px #0003}
+nav{background:transparent;padding:10px 12px;gap:8px;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{border:1.5px solid color-mix(in srgb,var(--c) 45%,#fff);background:#fff;color:#2b3a35;border-radius:999px;padding:6px 15px;font-weight:500;box-shadow:0 1px 3px #0001}
+nav button::before{content:'';display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--c);margin-left:7px}
+nav .on{background:var(--c);color:#fff;border-color:var(--c)}nav .on::before{background:#fff}
+main{padding:14px}main h2{color:var(--ac);font-size:26px}main h3{color:#2b3a35}
+button,.btn{border-radius:10px}
+.btn{background:var(--ac);border-color:var(--ac);color:#fff}
+.pc,.it{border:1px solid var(--line);border-top:3px solid var(--ac);border-radius:14px;box-shadow:0 2px 10px #00000010}
+input,select,textarea{border:1.5px solid var(--line);border-radius:10px;background:#fffefb;padding:10px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--ac);outline-offset:1px}
+.mc{border-radius:18px;box-shadow:0 10px 40px #0004;background:#fffdf8}
+.tr,.lc{--gold:var(--ac)}
+.cd{border-color:var(--ac);background:linear-gradient(#fff,color-mix(in srgb,var(--ac) 9%,#fff));box-shadow:0 1px 4px #0001}
+.cd.hit,.lr.hit{background:color-mix(in srgb,var(--ac) 25%,#fff)}
+.lr .tg,.tg{border-color:var(--ac);color:var(--ac)}
+#lt,#vp{border-radius:14px;border-color:var(--line)}
+th{background:color-mix(in srgb,var(--ac) 14%,#fff)}
+.mem-h{background:linear-gradient(135deg,var(--ac),color-mix(in srgb,var(--ac) 65%,#000));color:#fff}.mem-h h2{color:#fff}
+#lg{background:#fff;border-radius:20px;box-shadow:0 10px 40px #0002;margin-top:10vh!important}#lg h1{color:var(--grn)}
+#fab{box-shadow:0 4px 14px #0004}
 @page{size:A4 landscape;margin:10mm}
 .rg{padding:2px 0;border-bottom:1px dotted var(--line)}.rg .no{color:var(--gold);font-weight:700}.dd{font-size:10px;color:#777;font-style:normal}
 .cnt{font-size:11px;background:#f1e8d0;border-radius:10px;padding:0 6px;margin-top:2px;color:var(--ink)}#rb{overflow-x:auto}
@@ -73,22 +99,23 @@ table{width:100%;border-collapse:collapse;background:#fff}td,th{border:1px solid
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged,createUserWithEmailAndPassword,updatePassword}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import{initializeFirestore,persistentLocalCache,persistentMultipleTabManager,collection,doc,setDoc,addDoc,updateDoc,deleteDoc,getDoc,onSnapshot,writeBatch}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import{query,where,initializeFirestore,persistentLocalCache,persistentMultipleTabManager,collection,doc,setDoc,addDoc,updateDoc,deleteDoc,getDoc,onSnapshot,writeBatch}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 window.onunhandledrejection=e=>alert('تعذّرت العملية: '+(e.reason?.code||e.reason));
 const $=s=>document.querySelector(s),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const nd=s=>String(s||'').replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).trim(),uid=()=>Math.random().toString(36).slice(2,9);
 const CFG={apiKey:"AIzaSyCjQxKhLzb3f81ZUCsCsm9DfPcupo22CVU",authDomain:"abu-harbid-e5802.firebaseapp.com",projectId:"abu-harbid-e5802",storageBucket:"abu-harbid-e5802.firebasestorage.app",messagingSenderId:"991072738560",appId:"1:991072738560:web:6cc3d71afb895a37d8a7e5"};
 const MGR='brns.111@gmail.com',today=()=>new Date().toLocaleDateString('ar');
 const fa=initializeApp(CFG),auth=getAuth(fa),fs=initializeFirestore(fa,{localCache:persistentLocalCache({tabManager:persistentMultipleTabManager()})});
-let db={persons:[],sens:{},codes:[],posts:{council:[],news:[],mediation:[],forms:[],ads:[]},log:[],notes:[],polls:[],votes:[]},subs=[],seeded=false;
+let db={persons:[],sens:{},codes:[],posts:{council:[],news:[],mediation:[],forms:[],ads:[]},log:[],notes:[],polls:[],votes:[],memA:[],memM:[],memR:[]},subs=[],seeded=false;
 const desc=id=>db.persons.filter(c=>c.parent==id).flatMap(c=>[c.id,...desc(c.id)]),P=id=>db.persons.find(p=>p.id==id),ch=id=>db.persons.filter(p=>p.parent==id),R=()=>db.persons.find(p=>!p.parent);
 let view=localStorage.ah_view||'list',focus=null,S=null,tab='tree',exp=new Set(),hl=null,T={x:0,y:0,k:.85},drag=false;
 const can=p=>S&&(S.role=='admin'||(S.role=='sup'&&S.perms.includes(p))),adm=()=>S.role=='admin';
 const lg=t=>addDoc(collection(fs,'log'),{w:S.name,t,d:new Date().toLocaleString('ar'),ts:Date.now()});
 const note=t=>addDoc(collection(fs,'notes'),{t,d:Date.now()});
-const TABS=[['tree','الشجرة'],['people','الأفراد'],['council','مجلس العائلة'],['news','المناسبات والأخبار'],['polls','الاستفتاءات'],['mediation','لجنة الإصلاح والوساطة'],['dir','دليل الأفراد والمهارات'],['forms','الأكواد والنماذج'],['guide','الإرشادات'],['rep','الكشوف'],['log','سجل التعديلات']];
+const TABS=[['tree','الشجرة'],['people','الأفراد'],['council','مجلس العائلة'],['news','المناسبات والأخبار'],['polls','الاستفتاءات'],['memory','ذاكرة العائلة'],['mediation','لجنة الإصلاح والوساطة'],['dir','دليل الأفراد والمهارات'],['forms','الأكواد والنماذج'],['guide','الإرشادات'],['rep','الكشوف'],['log','سجل التعديلات']];
+const TC={tree:'#2e7d5b',people:'#237b8a',council:'#3b57a5',news:'#c26d0e',polls:'#7b4fb0',memory:'#b5533c',mediation:'#2f7aa3',dir:'#55803a',forms:'#5d6d7e',guide:'#259082',rep:'#8a6a3f',log:'#6f757d'};
 const vis=k=>k=='rep'?adm():k=='log'?S.role!='member':true;
-const PERMS=[['council','مجلس العائلة'],['news','المناسبات والأخبار'],['mediation','الإصلاح والوساطة'],['forms','النماذج'],['people','تعديل بيانات الأفراد'],['ads','إعلانات الدليل'],['polls','الاستفتاءات']];
+const PERMS=[['council','مجلس العائلة'],['news','المناسبات والأخبار'],['mediation','الإصلاح والوساطة'],['forms','النماذج'],['people','تعديل بيانات الأفراد'],['ads','إعلانات الدليل'],['polls','الاستفتاءات'],['memory','مراجعة الذاكرة']];
 /* دخول وبيانات */
 const ui=()=>{if(!S)return;if(!exp.size&&R())exp.add(R().id);render()};
 const rebuild=()=>db.persons.forEach(p=>Object.assign(p,db.sens[p.id]||{}));
@@ -96,7 +123,9 @@ const sub=(n,f)=>subs.push(onSnapshot(collection(fs,n),q=>{f(q.docs.map(d=>({id:
 function listen(){
 sub('persons',a=>{db.persons=a;rebuild();if(S.role=='admin'&&!a.length&&!seeded){seeded=true;setDoc(doc(fs,'persons','root'),{name:'سالم',parent:null,alive:true})}});
 sub('posts',a=>{db.posts={council:[],news:[],mediation:[],forms:[],ads:[]};a.sort((x,y)=>y.ts-x.ts).forEach(p=>db.posts[p.k]?.push(p))});
-if(S.role!='admin'&&S.pid)getDoc(doc(fs,'sens',S.pid)).then(d=>{if(d.exists()){db.sens[S.pid]={id:S.pid,...d.data()};rebuild();ui()}}).catch(()=>{});sub('polls',a=>db.polls=a.sort((x,y)=>y.ts-x.ts));sub('votes',a=>db.votes=a);sub('notes',a=>{db.notes=a.sort((x,y)=>y.d-x.d);alertNew()});
+if(S.role!='admin'&&S.pid)getDoc(doc(fs,'sens',S.pid)).then(d=>{if(d.exists()){db.sens[S.pid]={id:S.pid,...d.data()};rebuild();ui()}}).catch(()=>{});const mq=(q,k)=>subs.push(onSnapshot(q,x=>{db['mem'+k]=x.docs.map(d=>({id:d.id,...d.data()}));ui()},e=>console.warn('mem',e.code)));
+mq(query(collection(fs,'memories'),where('status','==','approved')),'A');mq(query(collection(fs,'memories'),where('uid','==',S.uid)),'M');if(can('memory'))mq(collection(fs,'memories'),'R');
+sub('polls',a=>db.polls=a.sort((x,y)=>y.ts-x.ts));sub('votes',a=>db.votes=a);sub('notes',a=>{db.notes=a.sort((x,y)=>y.d-x.d);alertNew()});
 if(S.role!='member')sub('log',a=>db.log=a.sort((x,y)=>y.ts-x.ts).slice(0,200));
 if(S.role=='admin'){sub('sens',a=>{db.sens={};a.forEach(x=>db.sens[x.id]=x);rebuild()});sub('users',a=>db.codes=a.filter(u=>u.code))}}
 async function mk(o){const code=o.code||Math.random().toString(36).slice(2,10).toUpperCase().padEnd(8,'X');
@@ -117,7 +146,7 @@ listen();start()});
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#le').textContent='';const u=nd($('#lu').value),p=$('#lp').value.trim(),m=u=='saed19';
 try{await signInWithEmailAndPassword(auth,m?MGR:p.toLowerCase()+'@abuharbid.app',m?p:u+p.toUpperCase())}catch(x){$('#le').textContent='اسم المستخدم أو الكود غير صحيح.'}};
 /* واجهة */
-function render(){$('#nv').innerHTML=TABS.filter(t=>vis(t[0])).map(t=>`<button data-a="tab" data-i="${t[0]}" class="${t[0]==tab?'on':''}">${t[1]}</button>`).join('');
+function render(){document.body.style.setProperty('--ac',TC[tab]||'#2e7d5b');$('#nv').innerHTML=TABS.filter(t=>vis(t[0])).map(t=>`<button data-a="tab" data-i="${t[0]}" style="--c:${TC[t[0]]}" class="${t[0]==tab?'on':''}">${t[1]}</button>`).join('');
 $('#mn').innerHTML=V[tab]();const n=db.notes.filter(x=>x.d>(+localStorage.ah_seen||0)).length;$('#bc').textContent=n||'';if(tab=='tree')gest();if(tab=='rep')pick()}
 const V={
 tree:()=>`<div class="bar"><input id="q" placeholder="ابحث عن فرد بالاسم"><button data-a="vw">${view=='list'?'🌳 مخطط':'☰ قائمة'}</button></div><div class="bar" style="margin-top:6px;flex-wrap:wrap"><button data-a="ea">فتح الكل</button><button data-a="ec">إغلاق الكل</button>${view=='tree'?'<button data-a="zi">+</button><button data-a="zo">−</button><button data-a="fit">⟲ ملاءمة</button>':''}${focus?'<button class="btn" data-a="unf">الشجرة كاملة</button>':''}</div><div id="res"></div><div id="lt" ${view=='list'?'':'hidden'}></div><div id="vp" ${view=='tree'?'':'hidden'}><div id="cv" class="tr"></div></div>`,
@@ -128,6 +157,12 @@ mediation:()=>posts('mediation','لجنة الإصلاح والوساطة','أع
 dir:()=>`<h2>دليل الأفراد والمهارات</h2><p class="sub">تعرّف على أفراد العائلة ومهنهم ومهاراتهم وخبراتهم.</p>${posts('ads','📢 إعلانات','مصالح ومحلات ومهارات أفراد العائلة.')}<h3>الأفراد</h3><input placeholder="ابحث بالاسم أو المهنة أو المهارة أو الحي" oninput="$('#dl').innerHTML=dl(this.value)"><div id="dl">${dl('')}</div>`,
 polls:()=>`<h2>الاستفتاءات</h2>${can('polls')?'<button class="btn" data-a="qa">+ استفتاء جديد</button>':''}`+(db.polls.map(q=>{const v=db.votes.filter(x=>x.poll==q.id),my=v.find(x=>x.uid==S.uid),c=[0,1].map(i=>v.filter(x=>x.c==i).length);return `<article class="pc"><h3>${esc(q.q)}</h3>${q.pair.map((t,i)=>`<button data-a="vt" data-i="${q.id}" data-k="${i}" ${my?'disabled':''} class="${my&&my.c==i?'btn':''}">${esc(t)} (${c[i]})</button>`).join(' ')}<p><small>${my?'تم تسجيل صوتك':'لم تصوّت بعد'} • المشاركون: ${v.length}</small></p>${adm()?`<button data-a="qd" data-i="${q.id}">حذف</button>`:''}</article>`}).join('')||'<p class="empty">لا توجد استفتاءات.</p>'),
 forms:()=>posts('forms','الأكواد التلقائية والنماذج','نماذج جاهزة وإجراءات الحصول على كود الدخول.')+(adm()?codesPanel():''),
+memory:()=>{const all=allMem(),ap=all.filter(e=>e.status=='approved'&&(memF=='all'||e.kind==memF)),mine=all.filter(e=>e.uid==S.uid&&e.status!='approved'),pend=can('memory')?all.filter(e=>e.status=='pending'):[];
+return `<div class="mem-h"><div style="font-size:42px">🌳</div><h2>ذاكرة عائلة أبوهربيد</h2><p>حكاياتنا، تاريخنا، وأجيالنا</p></div><div class="bar" style="flex-wrap:wrap;margin:10px 0">${[['all','الكل'],['حدث تاريخي','الأحداث'],['مناسبة عائلية','المناسبات'],['رواية عائلية','الروايات'],['صورة أو وثيقة','الصور والوثائق']].map(f=>`<button data-a="mf" data-k="${f[0]}" class="${memF==f[0]?'btn':''}">${f[1]}</button>`).join('')}</div>
+<div class="pc"><h3>📜 سجل تاريخ العائلة</h3><p class="sub">ساهم في حفظ تاريخ العائلة وقصص الأجداد والمناسبات المهمة. لن تظهر المشاركة في الأرشيف قبل موافقة المدير أو المشرف.</p><button class="btn" data-a="ma">＋ إضافة مشاركة</button></div>
+${mine.length?'<h3>مشاركاتي</h3>'+mine.map(e=>mcard(e,true)).join(''):''}
+<h3>🕰️ أرشيف العائلة</h3>${ap.map(e=>mcard(e)).join('')||'<p class="empty">لا توجد مشاركات منشورة في هذا التصنيف حتى الآن.</p>'}
+${can('memory')?'<h3>🔐 مراجعة المشاركات</h3>'+(pend.map(e=>mcard(e,false,true)).join('')||'<p class="empty">لا توجد مشاركات تنتظر الموافقة.</p>'):''}`},
 guide:()=>`<h2>إرشادات استخدام التطبيق</h2><div class="g">${[['🔑','سجّل الدخول','اكتب سنة ميلادك والكود الذي أعطاك إياه المدير.'],['🌳','تصفّح الشجرة','اضغط (+) لفتح فرع و(−) لإغلاقه.'],['🤏','كبّر وحرّك','باصبعين للتكبير، وبإصبع واحد للتحريك، ونقرتان على الفراغ لملاءمة الشجرة. أو بدّل بين المخطط والقائمة.'],['🔍','ابحث','اكتب اسم الفرد واضغط على النتيجة.'],['👤','اعرض البيانات','اضغط على بطاقة الفرد لترى بياناته وأبناءه.'],['🔔','تابع الإشعارات','الجرس يخبرك بكل جديد.'],['☎','تواصل مع المدير','زر واتساب العائم يفتح محادثة مباشرة.'],['📲','ثبّت التطبيق','من قائمة المتصفح: إضافة إلى الشاشة الرئيسية.']].map(s=>`<div class="it"><span>${s[0]}</span><h3>${s[1]}</h3><p>${s[2]}</p></div>`).join('')}</div>`,
 rep:()=>`<h2>الكشوف والطباعة</h2><select id="rt">${Object.entries(RT).map(([k,v])=>`<option value="${k}">${v}</option>`).join('')}</select><div id="pk"></div><label>اتجاه الصفحة<select id="ori"><option value="landscape">أفقي (عرضي)</option><option value="portrait">عمودي</option></select></label><div class="row"><button class="btn" data-a="rs">عرض</button><button data-a="rp">طباعة</button></div><div id="rb"></div>`,
 log:()=>`<h2>سجل التعديلات</h2>${db.log.map(l=>`<div class="it"><b>${esc(l.w)}</b> — ${esc(l.t)}<br><small>${l.d}</small></div>`).join('')||'<p class="empty">لا توجد تعديلات بعد.</p>'}`};
@@ -157,12 +192,17 @@ function alertNew(){const last=+localStorage.ah_notified||0,nw=db.notes.filter(n
 /* إكمال الاسم تلقائياً */
 const fw=n=>String(n||'').trim().split(/\s+/)[0]||'',fn=p=>p?(p.first||fw(p.name)):'';
 const fullName=(first,pid)=>{const f=P(pid),g=f&&P(f.parent);return [String(first).trim(),fn(f),fn(g),'أبوهربيد'].filter(Boolean).join(' ')};
+/* ذاكرة العائلة */
+let memF='all';
+const ST={pending:'قيد المراجعة',approved:'منشورة',rejected:'مرفوضة'},MK=['حدث تاريخي','مناسبة عائلية','رواية عائلية','صورة أو وثيقة'];
+const allMem=()=>{const m=new Map();[...db.memA,...db.memM,...db.memR].forEach(x=>m.set(x.id,x));return[...m.values()].sort((a,b)=>b.ts-a.ts)};
+const mcard=(e,own,rv)=>`<article class="pc"><h3>${esc(e.title)}</h3><small>${esc(e.kind)} · ${esc(e.date||'تاريخ غير محدد')}${own?' · '+ST[e.status]:''}</small>${e.img?`<img class="pi" src="${e.img}" data-a="mi" data-i="${e.id}">`:''}<p>${esc(e.details).split('\n').join('<br>')}</p><small>مقدم المشاركة: ${esc(e.author)}</small>${rv?`<div class="row"><button class="btn" data-a="mok" data-i="${e.id}">موافقة ونشر</button><button data-a="mno" data-i="${e.id}">رفض</button></div>`:''}${adm()||(own&&e.status!='approved')?`<div class="row"><button data-a="mdl" data-i="${e.id}">${adm()?'حذف':'حذف مشاركتي'}</button></div>`:''}</article>`;
 /* صور */
 const shrink=(f,m,q)=>new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,m/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);ok(c.toDataURL('image/jpeg',q))};im.onerror=no;im.src=r.result};r.onerror=no;r.readAsDataURL(f)});
 async function img(f){for(const[m,q]of[[900,.72],[600,.6],[400,.5]]){const u=await shrink(f,m,q);if(u.length<700000)return u}throw{code:'الصورة كبيرة جدًا'}}
 /* نوافذ */
 const md=h=>{$('#md').innerHTML=`<div class="mc">${h}</div>`;$('#md').hidden=false},cl=()=>$('#md').hidden=true;
-function fm(t,f,ok){md(`<h3>${t}</h3><form>${f.map(x=>x.t=='f'?`<label>${x.l}<input type="file" name="${x.k}" accept="image/*"></label>`:x.t=='c'?`<label class="ck"><input type="checkbox" name="${x.k}" ${x.v?'checked':''}>${x.l}</label>`:x.t=='s'?`<label>${x.l}<select name="${x.k}">${x.o.map(o=>`<option value="${o[0]}" ${o[0]==x.v?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`:x.t=='a'?`<label>${x.l}<textarea name="${x.k}" rows="5">${esc(x.v)}</textarea></label>`:`<label>${x.l}<input name="${x.k}" value="${esc(x.v)}"></label>`).join('')}<div class="row"><button class="btn">حفظ</button><button type="button" data-a="cl">إلغاء</button></div></form>`);
+function fm(t,f,ok){md(`<h3>${t}</h3><form>${f.map(x=>x.t=='d'?`<label>${x.l}<input type="date" name="${x.k}"></label>`:x.t=='f'?`<label>${x.l}<input type="file" name="${x.k}" accept="image/*"></label>`:x.t=='c'?`<label class="ck"><input type="checkbox" name="${x.k}" ${x.v?'checked':''}>${x.l}</label>`:x.t=='s'?`<label>${x.l}<select name="${x.k}">${x.o.map(o=>`<option value="${o[0]}" ${o[0]==x.v?'selected':''}>${esc(o[1])}</option>`).join('')}</select></label>`:x.t=='a'?`<label>${x.l}<textarea name="${x.k}" rows="5">${esc(x.v)}</textarea></label>`:`<label>${x.l}<input name="${x.k}" value="${esc(x.v)}"></label>`).join('')}<div class="row"><button class="btn">حفظ</button><button type="button" data-a="cl">إلغاء</button></div></form>`);
 $('#md form').onsubmit=e=>{e.preventDefault();const d={};new FormData(e.target).forEach((v,k)=>d[k]=v);f.filter(x=>x.t=='c').forEach(x=>d[x.k]=e.target[x.k].checked);ok(d)}}
 const PF=p=>[{k:'name',l:'الاسم الرباعي',v:p.name},{k:'year',l:'سنة الميلاد',v:p.year},{k:'alive',l:'على قيد الحياة',t:'c',v:p.alive!==false},{k:'abroad',l:'في الخارج',t:'c',v:p.abroad},{k:'idn',l:'رقم الهوية',v:p.idn},{k:'phone',l:'رقم الجوال',v:p.phone},{k:'fam',l:'عدد أفراد الأسرة',v:p.fam},{k:'sp',l:'اسم الزوجة',v:p.sp},{k:'spid',l:'رقم هوية الزوجة',v:p.spid},{k:'hood',l:'الحي',v:p.hood},{k:'job',l:'المهنة',v:p.job},{k:'skills',l:'المهارات والخبرات',v:p.skills}];
 const clean=d=>{d.year=nd(d.year);d.fam=nd(d.fam);d.idn=nd(d.idn);d.spid=nd(d.spid);d.phone=nd(d.phone);return d};
@@ -238,6 +278,12 @@ else if(a=='cp'){const t=decodeURIComponent(k);try{await navigator.clipboard.wri
 else if(a=='qa'){fm('استفتاء جديد',[{k:'q',l:'السؤال',t:'a',v:''},{k:'pair',l:'نوع الإجابة',t:'s',v:'موافق|رفض',o:[['صح|خطأ','صح / خطأ'],['موافق|رفض','موافق / رفض'],['أقبل|لا أقبل','أقبل / لا أقبل'],['أحضر|لم أحضر','أحضر / لم أحضر']]}],async d=>{await addDoc(collection(fs,'polls'),{q:d.q,pair:d.pair.split('|'),date:today(),ts:Date.now()});lg('استفتاء: '+d.q);note('استفتاء جديد: '+d.q);cl()})}
 else if(a=='vt'){await setDoc(doc(fs,'votes',i+'_'+S.uid),{poll:i,uid:S.uid,c:+k})}
 else if(a=='qd'){if(!confirm('حذف الاستفتاء؟'))return;const b=writeBatch(fs);b.delete(doc(fs,'polls',i));db.votes.filter(x=>x.poll==i).forEach(x=>b.delete(doc(fs,'votes',x.id)));await b.commit()}
+else if(a=='mf'){memF=k;render()}
+else if(a=='ma'){fm('إضافة مشاركة',[{k:'title',l:'عنوان المشاركة',v:''},{k:'kind',l:'نوع المشاركة',t:'s',v:MK[0],o:MK.map(x=>[x,x])},{k:'date',l:'التاريخ',t:'d'},{k:'details',l:'التفاصيل ومصدر المعلومة',t:'a',v:''},{k:'author',l:'اسم مقدم المشاركة (للمراجعة)',v:S.name||''},{k:'img',l:'صورة أو وثيقة (اختياري)',t:'f'}],async d=>{if(!d.title.trim()||!d.details.trim()||!d.author.trim()){alert('أكمل العنوان والتفاصيل واسم مقدم المشاركة');return}const im=d.img&&d.img.size?await img(d.img):'';await addDoc(collection(fs,'memories'),{title:d.title.trim(),kind:d.kind,date:d.date||'',details:d.details.trim(),author:d.author.trim(),uid:S.uid,status:adm()?'approved':'pending',img:im,ts:Date.now()});if(adm()){note('جديد في ذاكرة العائلة: '+d.title);lg('نشر في الذاكرة: '+d.title)}else toast('تم إرسال المشاركة للمراجعة. لن تُنشر قبل الموافقة.');cl()})}
+else if(a=='mok'){const e=allMem().find(x=>x.id==i);if(!confirm('هل أنت متأكد من الموافقة على النشر؟'))return;await updateDoc(doc(fs,'memories',i),{status:'approved'});lg('نشر في الذاكرة: '+e.title);note('جديد في ذاكرة العائلة: '+e.title)}
+else if(a=='mno'){const e=allMem().find(x=>x.id==i);if(!confirm('رفض هذه المشاركة؟'))return;await updateDoc(doc(fs,'memories',i),{status:'rejected'});lg('رفض مشاركة: '+e.title)}
+else if(a=='mdl'){if(!confirm('حذف هذه المشاركة؟'))return;await deleteDoc(doc(fs,'memories',i))}
+else if(a=='mi'){md('<img src="'+allMem().find(x=>x.id==i).img+'" style="width:100%;border-radius:8px"><div class="row"><button data-a="cl">إغلاق</button></div>')}
 else if(a=='sc'){statCat=statCat==k?null:k;$('#rb').innerHTML=statHtml()}
 else if(a=='rs'){$('#rb').innerHTML=rep($('#rt').value)}
 else if(a=='rp'){const v=$('#rt').value,o=$('#ori').value;if(v=='tree'&&!selIds().length){alert('حدّد شخصاً واحداً على الأقل من القائمة');return}if(v=='stat'&&!statId()){alert('اختر الأب أو الجد أولاً');return}$('#pa').className=o=='portrait'?'port':'land';$('#pgs').textContent='@page{size:A4 '+o+';margin:10mm}';$('#pa').innerHTML=`<h2>عائلة أبوهربيد — ${RT[v]}</h2>${rep(v)}<div class="ft">تصميم: سائد أبوهربيد</div>`;fitTree(o);print()}});
