@@ -1,228 +1,137 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوابة العائلة الرسمية</title>
-<style>
-body {
-font-family: Tahoma, Arial, sans-serif;
-background-color: #f4f6f9;
-margin: 0;
-padding: 20px;
-color: #333;
-}
-/* منع التحديد والنسخ */
-body.protected-content {
--webkit-user-select: none;
--ms-user-select: none;
-user-select: none;
-}
-input, textarea, select {
--webkit-user-select: text;
--ms-user-select: text;
-user-select: text;
-}
-.container {
-max-width: 800px;
-margin: 0 auto;
-background: #fff;
-padding: 25px;
-border-radius: 8px;
-box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-}
-h1 { color: #2c3e50; text-align: center; }
-.section { margin-bottom: 20px; padding: 20px; border: 1px solid #e1e8ed; border-radius: 6px; background: #fafbfc; }
-button {
-background-color: #27ae60;
-color: white;
-border: none;
-padding: 10px 18px;
-border-radius: 4px;
-cursor: pointer;
-font-size: 16px;
-font-weight: bold;
-}
-button:hover { background-color: #219653; }
-input[type="text"] {
-padding: 10px;
-width: 60%;
-border: 1px solid #ccc;
-border-radius: 4px;
-font-size: 16px;
-}
-​/* العلامة المائية */
-#security-watermark-overlay {
-position: fixed;
-top: 0;
-left: 0;
-width: 100vw;
-height: 100vh;
-pointer-events: none;
-z-index: 999999;
-display: flex;
-flex-wrap: wrap;
-overflow: hidden;
-opacity: 0.12;
-}
-.watermark-text {
-font-size: 14px;
-font-weight: bold;
-color: #000;
-transform: rotate(-30deg);
-margin: 40px;
-white-space: nowrap;
-}
-.alert-box {
-background: #e8f8f5;
-border-right: 4px solid #27ae60;
-padding: 10px;
-margin-top: 15px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بوابة العائلة الرسمية</title>
+    <style>
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        body.protected-content {
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; text-align: center; }
+        .section { margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #219653; }
+        
+        #security-watermark-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999999;
+            display: flex;
+            flex-wrap: wrap;
+            overflow: hidden;
+            opacity: 0.12;
+        }
+        .watermark-text {
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            transform: rotate(-30deg);
+            margin: 40px;
+            white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
-​<div class="container">
-<h1>بوابة العائلة الموحدة</h1>
-​<!-- قسم تسجيل الدخول الرمزي -->
-<div class="section" id="login-section">
-<h3>تسجيل الدخول بالرمز</h3>
-<p>أدخل كود الدخول الخاص بك للوصول إلى محتوى العائلة ومجموعة الواتساب الآمنة:</p>
-<input type="text" id="access-code" placeholder="أدخل رمز الدخول (مثال: 1234)">
-<button onclick="loginWithCode()">دخول</button>
-</div>
-​<!-- محتوى التطبيق (يظهر بعد الدخول الناجح) -->
-<div class="section" id="app-content" style="display: none;">
-<h3>لوحة المنشورات والأقسام التفاعلية</h3>
-<p>مرحباً بك في البوابة. محتوى هذا القسم محمي بالكامل ضد التسريب والنسخ.</p>
-​<div style="margin-top: 20px;">
-<label for="post-section">اختر القسم:</label>
 
+    <div class="container">
+        <h1>بوابة العائلة الموحدة</h1>
+        
+        <!-- شاشة تسجيل الدخول بالرمز المستلم من المدير -->
+        <div class="section" id="login-section">
+            <h3>تسجيل الدخول بالرمز</h3>
+            <p>أدخل كود الدخول الخاص بك (الذي استلمته من المدير):</p>
+            <input type="text" id="access-code" placeholder="أدخل الكود هنا">
+            <button onclick="loginWithCode()">دخول</button>
+        </div>
 
-<select id="post-section" style="padding: 8px; width: 100%; max-width: 300px; border-radius: 4px; border: 1px solid #ccc;">
-<option value="news">قسم الأخبار</option>
-<option value="announcements">الإعلانات</option>
-<option value="memory">الذاكرة</option>
-<option value="reform_committee">لجنة الإصلاح والوساطة (محمي وسري)</option>
-</select>
+        <!-- محتوى التطبيق (يظهر بعد إدخال الكود الصحيح) -->
+        <div class="section" id="app-content" style="display: none;">
+            <h3>لوحة المنشورات والأقسام</h3>
+            <p>مرحباً بك في البوابة. تم التحقق من الكود بنجاح.</p>
+            
+            <!-- زر النشر وتجربة المشاركة -->
+            <div style="margin-top: 15px;">
+                <select id="post-section">
+                    <option value="news">قسم الأخبار</option>
+                    <option value="announcements">الإعلانات</option>
+                    <option value="memory">الذاكرة</option>
+                    <option value="reform_committee">لجنة الإصلاح والوساطة (محمي وسري)</option>
+                </select>
+                <br><br>
+                <button onclick="createNewPost()">إضافة منشور جديد</button>
+            </div>
 
+            <!-- رابط مجموعة الواتساب يظهر هنا حصراً للمسجلين -->
+            <div class="section" id="whatsapp-group-container" style="display: none; background: #e8f8f5; margin-top: 20px;">
+                <h3>مجموعة الواتساب الرسمية</h3>
+                <p>بما أنك مسجل ومعتمد بالموقع، يمكنك الانضمام للمجموعة:</p>
+                <a id="group-link-btn" href="#" target="_blank"><button>الانضمام لمجموعة الواتساب</button></a>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        let appSettings = {
+            whatsAppGroupLink: "https://chat.whatsapp.com/EXAMPLE_GROUP_KEY"
+        };
 
-<button onclick="createNewPost()">إضافة منشور جديد</button>
-</div>
-​<!-- رابط مجموعة الواتساب للمسجلين فقط -->
-<div class="alert-box" id="whatsapp-group-container" style="display: none;">
-<h3>مجموعة الواتساب الرسمية للعائلة</h3>
-<p>بصفتك عضواً مسجلاً ومخولاً بالدخول، يمكنك الانضمام للمجموعة الرسمية عبر الزر أدناه:</p>
-<a id="group-link-btn" href="#" target="_blank"><button style="background-color: #25D366;">الانضمام لمجموعة الواتساب</button></a>
-</div>
-​<div style="margin-top: 30px; text-align: center;">
-<button onclick="logout()" style="background-color: #e74c3c;">تسجيل الخروج</button>
-</div>
-</div>
-</div>
-​<script>
-// إعدادات التطبيق الديناميكية (يمكن للمشرف تغييرها لاحقاً)
-let appSettings = {
-whatsAppGroupLink: "https://chat.whatsapp.com/EXAMPLE_FAMILY_GROUP"
-};
-​// دالة تسجيل الدخول بالرمز
-function loginWithCode() {
-const code = document.getElementById('access-code').value.trim();
-if (code === "1234") { // الرمز الافتراضي للتجربة
-localStorage.setItem("is_logged_in", "true");
-localStorage.setItem("user_role", "member"); // يمكن تبديلها إلى "admin" للمشرفين
-localStorage.setItem("user_id", "عضو_" + Math.floor(Math.random() * 900 + 100));
-​alert("تم تسجيل الدخول بنجاح!");
-checkLoginState();
-} else {
-alert("رمز الدخول غير صحيح! يرجى التحقق من الكود.");
-}
-}
-​// تسجيل الخروج
-function logout() {
-localStorage.clear();
-location.reload();
-}
-​// فحص حالة الدخول وتطبيق الحماية
-function checkLoginState() {
-const isLoggedIn = localStorage.getItem("is_logged_in") === "true";
-const role = localStorage.getItem("user_role") || "member";
-const userId = localStorage.getItem("user_id") || "مستخدم";
-​if (isLoggedIn) {
-document.getElementById('login-section').style.display = 'none';
-document.getElementById('app-content').style.display = 'block';
-​// إظهار رابط الواتساب حصراً للمسجلين الدخول
-document.getElementById('whatsapp-group-container').style.display = 'block';
-document.getElementById('group-link-btn').href = appSettings.whatsAppGroupLink;
-​// تفعيل حماية النسخ، التحديد، والتصوير لغير المشرفين
-if (role !== "admin") {
-document.body.classList.add("protected-content");
-​// منع زر الماوس الأيمن
-document.addEventListener("contextmenu", (e) => e.preventDefault());
-​// منع اختصارات التصوير والنسخ وفحص الكود
-document.addEventListener("keydown", (e) => {
-if (
-e.key === "PrintScreen" ||
-(e.ctrlKey && (e.key === "c" || e.key === "u" || e.key === "s" || e.key === "C" || e.key === "U" || e.key === "S")) ||
-(e.ctrlKey && e.shiftKey && (e.key === "I" || e.key === "i" || e.key === "C" || e.key === "c"))
-) {
-e.preventDefault();
-alert("تنبيه أمني: النسخ أو التقاط لقطات الشاشة غير مسموح به لحماية خصوصية العائلة.");
-}
-});
-​// تفعيل العلامة المائية لردع التصوير الخارجي
-createWatermarkOverlay(userId);
-}
-}
-}
-​// توليد العلامة المائية برقم المعرف
-function createWatermarkOverlay(identifier) {
-if (document.getElementById("security-watermark-overlay")) return;
-const overlay = document.createElement("div");
-overlay.id = "security-watermark-overlay";
-for (let i = 0; i < 35; i++) {
-const span = document.createElement("span");
-span.className = "watermark-text";
-span.innerText = بوابة العائلة - معرف: ${identifier};
-overlay.appendChild(span);
-}
-document.body.appendChild(overlay);
-}
-​// محاكاة إنشاء منشور مع التحقق من الأقسام وسؤال المشاركة
-function createNewPost() {
-const section = document.getElementById('post-section').value;
-​const savedPost = {
-id: Date.now(),
-sectionId: section,
-title: "منشور عائلي جديد ومهم"
-};
-​// حماية لجنة الإصلاح والوساطة: منع المشاركة العامة تماماً
-if (section === "reform_committee") {
-alert("تم حفظ الموضوع بنجاح في لجنة الإصلاح. (ملاحظة: هذا القسم سري تماماً ولا توجد له أي مشاركة خارجية حفاظاً على الخصوصية).");
-return;
-}
-​// الأقسام المسموح فيها المشاركة السريعة
-const allowedSections = ["news", "announcements", "memory"];
-if (allowedSections.includes(section)) {
-const wantToShare = confirm("تم النشر بنجاح! هل تريد مشاركة المنشور على مجموعة الواتساب؟");
-if (wantToShare) {
-openWhatsAppShare(savedPost);
-}
-}
-}
-​// تجهيز رابط الواتساب المباشر للتبويب أو المنشور
-function openWhatsAppShare(post) {
-const baseUrl = window.location.origin + window.location.pathname;
-const directLink = ${baseUrl}?tab=${post.sectionId}&post_id=${post.id};
-const messageText = 📌 *منشور جديد في بوابة العائلة*\n\nالعنوان: ${post.title}\n\nلمشاهدة التفاصيل مباشرة عبر الموقع (يلزم كود الدخول):\n${directLink};
-​const whatsappUrl = https://api.whatsapp.com/send?text=${encodeURIComponent(messageText)};
-window.open(whatsappUrl, "_blank");
-}
-​// التحقق عند تحميل الصفحة
-window.onload = function() {
-checkLoginState();
-};
-</script>
-</body>
-  </html>
+        function loginWithCode() {
+            const code = document.getElementById('access-code').value.trim();
+            // الكود التجريبي للاختبار هو 1234
+            if (code === "1234") {
+                localStorage.setItem("is_logged_in", "true");
+                localStorage.setItem("user_role", "member"); 
+                localStorage.setItem("user_id", "عضو_" + Math.floor(Math.random() * 1000));
+                
+                alert("تم تسجيل الدخول بنجاح!");
+                checkLoginState();
+            } else {
+                alert("الكود غير صحيح! يرجى مراجعة المدير.");
+            }
+        }
+
+        function checkLoginState() {
+            const isLoggedIn = localStorage.getItem("is_logged_in") === "true";
+            const role = localStorage.getItem("user_role") || "member";
+            const userId = localStorage.getItem("user_id") || "عضو";
+
+            if (isLoggedIn) {
+                document.getElementById('login-section').style.display = 'none';
+                document.getElementById('app-content').style.display = 'block';
+                
+                document.getElementById('whatsapp-
