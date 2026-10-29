@@ -1,505 +1,464 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شجرة عائلة إيلابو هربيد - النسخة المطورة والذكية</title>
-    <style>
-        :root {
-            --primary-color: #1e3c72;
-            --secondary-color: #2a5298;
-            --bg-color: #f4f7f6;
-            --card-bg: rgba(255, 255, 255, 0.95);
-            --text-color: #333;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>شجرة عائلة إيلابو هربيد</title>
+  <style>
+    :root {
+      --primary: #163f30;
+      --primary-2: #245a45;
+      --secondary: #d4b15a;
+      --bg: #f5f2ea;
+      --white: #ffffff;
+      --text: #1f2d2a;
+      --muted: #5f6f6a;
+      --panel: rgba(255,255,255,0.96);
+      --line: #e3dcc7;
+      --shadow: 0 10px 26px rgba(12,26,20,0.08);
+    }
 
-        * { box-sizing: border-box; }
+    * { box-sizing: border-box; }
 
-        body {
-            font-family: 'Cairo', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-color);
-            direction: rtl;
-        }
+    html {
+      scroll-behavior: smooth;
+    }
 
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #f9f6f0 0%, #eef3ef 100%);
+      color: var(--text);
+      font-family: "Cairo", "Tahoma", sans-serif;
+      direction: rtl;
+    }
 
-        header.app-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    .app {
+      max-width: 480px;
+      margin: 0 auto;
+      min-height: 100vh;
+      padding: 14px 14px 50px;
+    }
 
-        header.app-header h1 {
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      border-radius: 22px;
+      padding: 22px 18px 18px;
+      color: var(--white);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
+    }
 
-        header.app-header p {
-            color: #666;
-            font-size: 0.95rem;
-        }
+    .header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(212,177,90,0.25), transparent 36%);
+    }
 
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
+    .header-inner {
+      position: relative;
+      z-index: 1;
+    }
 
-        .tab-btn {
-            background: #fff;
-            border: 1px solid #dcdcdc;
-            padding: 10px 18px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-            font-weight: bold;
-            color: #555;
-            transition: all 0.3s ease;
-        }
+    .brand {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin: 0 0 4px;
+      color: #fff;
+    }
 
-        .tab-btn.active, .tab-btn:hover {
-            background: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
+    .subtitle {
+      margin: 0;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
 
-        .tab-content {
-            display: none;
-        }
+    .top-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.7rem;
+      margin-bottom: 12px;
+    }
 
-        .tab-content.active {
-            display: block;
-        }
+    .nav {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 16px 4px 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
 
-        .ai-chat-box {
-            background: var(--card-bg);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            max-width: 700px;
-            margin: 0 auto;
-            overflow: hidden;
-        }
+    .nav::-webkit-scrollbar {
+      display: none;
+    }
 
-        .ai-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-            color: #fff;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+    .nav button {
+      flex: 0 0 auto;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: var(--text);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.78rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(15,31,24,0.03);
+    }
 
-        .ai-avatar {
-            font-size: 24px;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px;
-            border-radius: 50%;
-        }
+    .nav button.active {
+      background: linear-gradient(135deg, var(--secondary), #efcf7b);
+      color: #1d392f;
+      border-color: transparent;
+    }
 
-        .ai-title {
-            display: flex;
-            flex-direction: column;
-        }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 18px 16px;
+      margin-top: 14px;
+    }
 
-        .ai-name {
-            font-weight: bold;
-            font-size: 1.05rem;
-        }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 1.25rem;
+      color: var(--primary);
+    }
 
-        .ai-status {
-            font-size: 0.8rem;
-            opacity: 0.85;
-        }
+    .panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
 
-        .ai-messages-list {
-            height: 380px;
-            overflow-y: auto;
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #f8f9fa;
-        }
+    .assistant {
+      overflow: hidden;
+      padding: 0;
+      background: rgba(255,255,255,0.9);
+    }
 
-        .ai-msg {
-            padding: 12px 16px;
-            border-radius: 12px;
-            max-width: 85%;
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
+    .assistant-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-2) 100%);
+      color: #fff;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
-        .ai-msg.bot {
-            background: #ffffff;
-            color: #2c3e50;
-            align-self: flex-start;
-            border-right: 4px solid var(--secondary-color);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+    .assistant-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+      display: grid;
+      place-items: center;
+      font-size: 1.4rem;
+    }
 
-        .ai-msg.user {
-            background: var(--secondary-color);
-            color: #ffffff;
-            align-self: flex-end;
-        }
+    .assistant-meta {
+      display: flex;
+      flex-direction: column;
+    }
 
-        .ai-actions-bar {
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px dashed #e0e0e0;
-            display: flex;
-            gap: 10px;
-        }
+    .assistant-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
 
-        .ai-action-btn {
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            font-size: 0.8rem;
-            color: #555;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
+    .assistant-status {
+      font-size: 0.7rem;
+      opacity: 0.8;
+    }
 
-        .ai-action-btn:hover {
-            color: var(--primary-color);
-        }
+    .messages {
+      background: #f7f8f6;
+      min-height: 320px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-        .ai-input-area {
-            padding: 12px;
-            display: flex;
-            gap: 8px;
-            background: #fff;
-            border-top: 1px solid #eee;
-        }
+    .msg {
+      max-width: 88%;
+      padding: 12px 13px;
+      border-radius: 16px;
+      line-height: 1.7;
+      font-size: 0.9rem;
+      box-shadow: 0 4px 14px rgba(9,20,17,0.03);
+    }
 
-        .ai-input-area input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            outline: none;
-            font-family: 'Cairo', sans-serif;
-        }
+    .msg.bot {
+      background: #fff;
+      color: var(--text);
+      align-self: flex-start;
+      border-right: 4px solid var(--secondary);
+    }
 
-        .ai-send-btn {
-            background: var(--secondary-color);
-            color: #fff;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            font-family: 'Cairo', sans-serif;
-        }
+    .msg.user {
+      background: linear-gradient(135deg, #244e43 0%, #2d6d5d 100%);
+      color: #fff;
+      align-self: flex-end;
+      border-left: 4px solid #bdae75;
+    }
 
-        .section-card {
-            background: #fff;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 20px;
-        }
+    .msg-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
 
-        @media (max-width: 768px) {
-            .main-container {
-                padding: 12px;
-            }
+    .mini-btn {
+      border: none;
+      background: #f1efe8;
+      color: var(--primary);
+      border-radius: 10px;
+      padding: 7px 10px;
+      font-size: 0.72rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
 
-            header.app-header {
-                margin-bottom: 20px;
-            }
+    .input-bar {
+      display: flex;
+      gap: 8px;
+      padding: 12px;
+      background: #fff;
+      border-top: 1px solid var(--line);
+    }
 
-            header.app-header h1 {
-                font-size: 1.7rem;
-            }
+    .input-bar input {
+      flex: 1;
+      font-family: inherit;
+      border: 1px solid #dfe4dc;
+      background: #f8f9f7;
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      font-size: 0.9rem;
+      color: var(--text);
+    }
 
-            header.app-header p {
-                font-size: 0.8rem;
-                line-height: 1.6;
-            }
+    .send-btn {
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+      font-family: inherit;
+      font-weight: 800;
+      padding: 12px 16px;
+      min-width: 100px;
+      cursor: pointer;
+    }
 
-            .nav-tabs {
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                align-items: stretch;
-            }
+    .mini-card {
+      background: linear-gradient(180deg, #ffffff, #f7f8f5);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+      margin-top: 14px;
+    }
 
-            .tab-btn {
-                width: 100%;
-                padding: 12px 14px;
-                font-size: 0.9rem;
-            }
+    .mini-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: var(--primary);
+    }
 
-            .ai-chat-box {
-                max-width: 100%;
-                border-radius: 12px;
-            }
+    .mini-list {
+      display: grid;
+      gap: 8px;
+    }
 
-            .ai-header {
-                padding: 12px;
-                gap: 8px;
-            }
+    .mini-item {
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: #f5f8f6;
+      border: 1px solid #edf1eb;
+      font-size: 0.84rem;
+      color: var(--text);
+    }
 
-            .ai-avatar {
-                font-size: 20px;
-                padding: 7px;
-            }
+    @media (max-width: 380px) {
+      .app {
+        padding-left: 10px;
+        padding-right: 10px;
+      }
 
-            .ai-name {
-                font-size: 0.9rem;
-            }
+      .brand {
+        font-size: 1.45rem;
+      }
 
-            .ai-status {
-                font-size: 0.72rem;
-            }
+      .header {
+        padding: 18px 14px 16px;
+      }
 
-            .ai-messages-list {
-                height: 300px;
-                padding: 10px;
-            }
+      .nav button {
+        padding: 9px 12px;
+        font-size: 0.73rem;
+      }
 
-            .ai-msg {
-                max-width: 92%;
-                font-size: 0.85rem;
-                padding: 10px 12px;
-            }
-
-            .ai-input-area {
-                flex-direction: column;
-            }
-
-            .ai-input-area input,
-            .ai-send-btn {
-                width: 100%;
-                box-sizing: border-box;
-            }
-
-            .ai-send-btn {
-                padding: 12px 16px;
-            }
-
-            .section-card {
-                padding: 15px;
-            }
-        }
-
-        @media (orientation: portrait) and (max-width: 480px) {
-            body {
-                background: linear-gradient(180deg, #f4f7f6 0%, #eef5ff 100%);
-            }
-
-            .main-container {
-                padding: 10px;
-            }
-
-            .nav-tabs {
-                margin-bottom: 18px;
-            }
-
-            .tab-btn {
-                border-radius: 12px;
-                font-size: 0.82rem;
-            }
-
-            .ai-actions-bar {
-                flex-wrap: wrap;
-                gap: 6px;
-            }
-        }
-    </style>
+      .msg {
+        font-size: 0.84rem;
+      }
+    }
+  </style>
 </head>
 <body>
+  <div class="app">
+    <header class="header">
+      <div class="header-inner">
+        <div class="top-badge">نسخة رأسية • Mobile First</div>
+        <h1 class="brand">شجرة عائلة إيلابو هربيد</h1>
+        <p class="subtitle">المنصة الرقمية الموحدة لتاريخ العائلة، الأنساب، والأرشيف التفاعلي.</p>
+      </div>
+    </header>
 
-    <div class="main-container">
-        <header class="app-header">
-            <h1>شجرة عائلة إيلابو هربيد</h1>
-            <p>المنصة الرقمية الموحدة لتاريخ العائلة، الأنساب، والأرشيف التفاعلي</p>
-        </header>
+    <nav class="nav" aria-label="التنقل">
+      <button class="active">🌳 الشجرة</button>
+      <button>🤖 المساعد</button>
+      <button>👥 العائلة</button>
+      <button>📜 الأرشيف</button>
+      <button>📅 المناسبات</button>
+    </nav>
 
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab(event, 'tree-view')">🌳 الشجرة التفاعلية</button>
-            <button class="tab-btn" onclick="switchTab(event, 'ai-view')">🤖 المساعد الذكي</button>
-            <button class="tab-btn" onclick="switchTab(event, 'directory-view')">👥 دليل المهن والعائلة</button>
-            <button class="tab-btn" onclick="switchTab(event, 'archive-view')">📜 الذاكرة والأرشيف</button>
-            <button class="tab-btn" onclick="switchTab(event, 'calendar-view')">📅 المناسبات والأعياد</button>
+    <section class="panel assistant">
+      <div class="assistant-header">
+        <div class="assistant-avatar">🤖</div>
+        <div class="assistant-meta">
+          <div class="assistant-name">المساعد الذكي</div>
+          <div class="assistant-status">متصل بالملف الشخصي</div>
         </div>
+      </div>
 
-        <div id="tree-view" class="tab-content active">
-            <div class="section-card">
-                <h2>عرض الشجرة التفاعلية</h2>
-                <p>هنا تظهر خريطة الأجيال والفروع العائلية بتصميم مرن ومنسدل.</p>
-            </div>
+      <div class="messages" id="messages">
+        <div class="msg bot">
+          أهلاً وسهلاً بك 👋! معك المساعد الذكي لشجرة عائلة إيلابو هربيد. كيف يمكنني مساعدتك اليوم؟
+          <div class="msg-actions">
+            <button class="mini-btn" onclick="copyText('أهلاً وسهلاً بك 👋! معك المساعد الذكي لشجرة عائلة إيلابو هربيد. كيف يمكنني مساعدتك اليوم؟')">نسخ</button>
+            <button class="mini-btn" onclick="saveText('أهلاً وسهلاً بك 👋! معك المساعد الذكي لشجرة عائلة إيلابو هربيد. كيف يمكنني مساعدتك اليوم؟')">حفظ</button>
+          </div>
         </div>
+      </div>
 
-        <div id="ai-view" class="tab-content">
-            <div id="ai-assistant-container" class="ai-chat-box">
-                <div class="ai-header">
-                    <div class="ai-avatar">🤖</div>
-                    <div class="ai-title">
-                        <span class="ai-name">المساعد الذكي لشجرة العائلة</span>
-                        <span class="ai-status" id="ai-user-status">متصل بالملف الشخصي</span>
-                    </div>
-                </div>
+      <div class="input-bar">
+        <input id="userInput" type="text" placeholder="اكتب سؤالك..." />
+        <button class="send-btn" onclick="sendMessage()">إرسال</button>
+      </div>
+    </section>
 
-                <div id="ai-messages" class="ai-messages-list">
-                </div>
+    <section class="panel">
+      <h2>عرض الشجرة التفاعلية</h2>
+      <p>هنا تظهر خريطة الأجيال والفروع العائلية مع تنسيق عمودي أنيق ومناسب للجوال.</p>
+    </section>
 
-                <div class="ai-input-area">
-                    <input type="text" id="ai-user-input" placeholder="اسأل المساعد عن الأقارب، الأنساب، أو تاريخ العائلة..." onkeypress="handleKeyPress(event)" />
-                    <button onclick="sendAIMessage()" class="ai-send-btn">إرسال 🚀</button>
-                </div>
-            </div>
-        </div>
+    <section class="mini-card">
+      <h3>أبرز الأقسام</h3>
+      <div class="mini-list">
+        <div class="mini-item">🌳 الشجرة التفاعلية</div>
+        <div class="mini-item">👥 دليل العائلة والمهن</div>
+        <div class="mini-item">📜 الذاكرة والأرشيف</div>
+        <div class="mini-item">📅 المناسبات والأعياد</div>
+      </div>
+    </section>
+  </div>
 
-        <div id="directory-view" class="tab-content">
-            <div class="section-card">
-                <h2>دليل الكفاءات والمهن العائلية</h2>
-                <p>تصفية سريعة للأفراد حسب التخصصات والمدن لتسهيل التواصل والتكافل.</p>
-            </div>
-        </div>
+  <script>
+    function sendMessage() {
+      const input = document.getElementById("userInput");
+      const text = input.value.trim();
+      if (!text) return;
 
-        <div id="archive-view" class="tab-content">
-            <div class="section-card">
-                <h2>معرض الصور والأرشيف التاريخي</h2>
-                <p>القصص، السير الذاتية للأجداد، والوثائق القديمة.</p>
-            </div>
-        </div>
+      addMessage("user", text);
 
-        <div id="calendar-view" class="tab-content">
-            <div class="section-card">
-                <h2>التقويم والمناسبات العائلية</h2>
-                <p>أعياد الميلاد والمناسبات القادمة مع التنبيهات الذكية.</p>
-            </div>
-        </div>
-    </div>
+      setTimeout(() => {
+        const reply = buildReply(text);
+        addMessage("bot", reply);
+      }, 400);
 
-    <script>
-        function switchTab(evt, tabId) {
-            const contents = document.querySelectorAll('.tab-content');
-            contents.forEach(c => c.classList.remove('active'));
+      input.value = "";
+    }
 
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(b => b.classList.remove('active'));
+    function addMessage(type, text) {
+      const messages = document.getElementById("messages");
+      const box = document.createElement("div");
+      box.className = "msg " + type;
 
-            document.getElementById(tabId).classList.add('active');
-            evt.currentTarget.classList.add('active');
-        }
+      const content = document.createElement("div");
+      content.textContent = text;
 
-        const familyDatabase = [
-            { birthYear: "1984", firstName: "سائد", nickname: "أبو محمد" },
-            { birthYear: "1990", firstName: "محمد", nickname: "أبو إبراهيم" }
-        ];
+      box.appendChild(content);
 
-        const AI_SYSTEM_GUARDRAILS = {
-            scopeOnly: true,
-            allowComparisons: false
-        };
+      if (type === "bot") {
+        const actions = document.createElement("div");
+        actions.className = "msg-actions";
 
-        window.addEventListener("DOMContentLoaded", () => {
-            const loggedInBirthYear = "1984";
-            const currentUser = familyDatabase.find(p => p.birthYear === loggedInBirthYear);
+        const copyBtn = document.createElement("button");
+        copyBtn.className = "mini-btn";
+        copyBtn.textContent = "نسخ";
+        copyBtn.onclick = () => copyText(text);
 
-            if (currentUser) {
-                triggerAIWelcome(currentUser.nickname || currentUser.firstName);
-            } else {
-                triggerAIWelcome("العزيز");
-            }
-        });
+        const saveBtn = document.createElement("button");
+        saveBtn.className = "mini-btn";
+        saveBtn.textContent = "حفظ";
+        saveBtn.onclick = () => saveText(text);
 
-        function triggerAIWelcome(userName) {
-            const welcomeText = `أهلاً وسهلاً بك يا ${userName} 👋! معك المساعد الذكي الخاص بموقع عائلة إيلابو هربيد، كيف يمكنني تقديم المساعدة لك في كل ما يخص شجرة عائلتنا اليوم؟`;
-            renderAIMessage("bot", welcomeText);
-        }
+        actions.appendChild(copyBtn);
+        actions.appendChild(saveBtn);
+        box.appendChild(actions);
+      }
 
-        function sendAIMessage() {
-            const inputEl = document.getElementById("ai-user-input");
-            const query = inputEl.value.trim();
-            if (!query) return;
+      messages.appendChild(box);
+      messages.scrollTop = messages.scrollHeight;
+    }
 
-            renderAIMessage("user", query);
-            inputEl.value = "";
+    function buildReply(query) {
+      const q = query.toLowerCase();
 
-            setTimeout(() => {
-                const response = processQueryWithGuardrails(query);
-                renderAIMessage("bot", response);
-            }, 500);
-        }
+      if (q.includes("مقارنة") || q.includes("أفضل") || q.includes("أكثر")) {
+        return "عذراً، هذه الخاصية غير متاحة حالياً للحفاظ على خصوصية المعلومات العائلية والاهتمام بالتوازن بين الفروع.";
+      }
 
-        function processQueryWithGuardrails(userQuery) {
-            const query = userQuery.toLowerCase();
-            const comparisonKeywords = ["مقارنة", "من أفضل", "أكثر من", "أقل من", "مين فرع أفضل", "إحصائية فرع"];
-            const isComparison = comparisonKeywords.some(keyword => query.includes(keyword));
+      if (q.includes("نسب") || q.includes("عائلة") || q.includes("جد") || q.includes("قرابة") || q.includes("تاريخ")) {
+        return "بناءً على سجلات شجرة عائلة إيلابو هربيد، تم تسجيل استفسارك ضمن النطاق المسموح. هل ترغب في التحقق من صلة قرابة أو عرض تفاصيل أكثر عن أحد الفروع؟";
+      }
 
-            if (isComparison && !AI_SYSTEM_GUARDRAILS.allowComparisons) {
-                return "عذراً، هذه الخاصية غير متاحة للحفاظ على أصول ومفهوم التماسك العائلي والخصوصية بين جميع الفروع.";
-            }
+      return "أستطيع مساعدتك في شجرة العائلة، الأنساب، تاريخ العائلة، المناسبات، والملفات الشخصية. اكتب سؤالك بشكل مختصر.";
+    }
 
-            const familyKeywords = ["قرابة", "نسب", "جد", "عم", "خال", "عائلة", "سيرة", "تاريخ", "تولد", "وفاة", "أبناء", "فرع", "صلة"];
-            const isFamilyRelated = familyKeywords.some(keyword => query.includes(keyword));
+    function copyText(text) {
+      navigator.clipboard.writeText(text).catch(() => {
+        alert("تعذر النسخ، جرّب مرة أخرى.");
+      });
+    }
 
-            if (!isFamilyRelated) {
-                return "عذراً، أنا مخصص فقط لمساعدتك في كل ما يتعلق بشجرة العائلة، الأنساب، والتاريخ العائلي الخاص بعائلتنا.";
-            }
+    function saveText(text) {
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "معلومة_العائلة.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
 
-            return `بناءً على سجلات شجرة عائلة إيلابو هربيد: تم فحص استفسارك بشأن "${userQuery}". هل ترغب في تتبع صلة القرابة أو معرفة تفاصيل إضافية؟`;
-        }
-
-        function renderAIMessage(sender, text) {
-            const messagesContainer = document.getElementById("ai-messages");
-            const msgDiv = document.createElement("div");
-            msgDiv.className = `ai-msg ${sender}`;
-
-            let htmlContent = `<div>${text}</div>`;
-
-            if (sender === "bot") {
-                htmlContent += `
-                    <div class="ai-actions-bar">
-                        <button class="ai-action-btn" onclick="copyToClipboard('${escapeText(text)}')">📋 نسخ</button>
-                        <button class="ai-action-btn" onclick="downloadResponseAsText('${escapeText(text)}')">📥 حفظ النص</button>
-                    </div>
-                `;
-            }
-
-            msgDiv.innerHTML = htmlContent;
-            messagesContainer.appendChild(msgDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
-
-        function downloadResponseAsText(text) {
-            const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'إجابة_المساعد_العائلي.txt';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text);
-            alert('تم نسخ النص بنجاح!');
-        }
-
-        function escapeText(text) {
-            return text.replace(/'/g, "\\'").replace(/\n/g, ' ');
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendAIMessage();
-        }
-    </script>
+    document.getElementById("userInput").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") sendMessage();
+    });
+  </script>
 </body>
-</html>
+    </html>
