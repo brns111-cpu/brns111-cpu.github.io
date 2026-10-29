@@ -13,6 +13,8 @@
             --text-color: #333;
         }
 
+        * { box-sizing: border-box; }
+
         body {
             font-family: 'Cairo', sans-serif;
             background-color: var(--bg-color);
@@ -43,7 +45,6 @@
             font-size: 0.95rem;
         }
 
-        /* شريط التبويبات الرئيسية (UI/UX Tabs) */
         .nav-tabs {
             display: flex;
             justify-content: center;
@@ -56,7 +57,7 @@
             background: #fff;
             border: 1px solid #dcdcdc;
             padding: 10px 18px;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             font-family: 'Cairo', sans-serif;
             font-weight: bold;
@@ -70,7 +71,6 @@
             border-color: var(--primary-color);
         }
 
-        /* أقسام المحتوى */
         .tab-content {
             display: none;
         }
@@ -79,7 +79,6 @@
             display: block;
         }
 
-        /* واجهة المساعد الذكي المصغرة والزجاجية */
         .ai-chat-box {
             background: var(--card-bg);
             border-radius: 16px;
@@ -205,7 +204,6 @@
             font-family: 'Cairo', sans-serif;
         }
 
-        /* تنسيق الأقسام الأخرى للاستمرارية */
         .section-card {
             background: #fff;
             padding: 20px;
@@ -233,15 +231,16 @@
             }
 
             .nav-tabs {
+                display: flex;
+                flex-direction: column;
                 gap: 8px;
+                align-items: stretch;
             }
 
             .tab-btn {
-                flex: 1 1 calc(50% - 8px);
-                min-width: 0;
-                padding: 10px 12px;
-                font-size: 0.82rem;
-                text-align: center;
+                width: 100%;
+                padding: 12px 14px;
+                font-size: 0.9rem;
             }
 
             .ai-chat-box {
@@ -297,13 +296,22 @@
             }
         }
 
-        @media (max-width: 420px) {
-            .tab-btn {
-                flex-basis: 100%;
+        @media (orientation: portrait) and (max-width: 480px) {
+            body {
+                background: linear-gradient(180deg, #f4f7f6 0%, #eef5ff 100%);
             }
 
-            header.app-header h1 {
-                font-size: 1.45rem;
+            .main-container {
+                padding: 10px;
+            }
+
+            .nav-tabs {
+                margin-bottom: 18px;
+            }
+
+            .tab-btn {
+                border-radius: 12px;
+                font-size: 0.82rem;
             }
 
             .ai-actions-bar {
@@ -316,13 +324,11 @@
 <body>
 
     <div class="main-container">
-        <!-- ترويسة الموقع -->
         <header class="app-header">
             <h1>شجرة عائلة إيلابو هربيد</h1>
             <p>المنصة الرقمية الموحدة لتاريخ العائلة، الأنساب، والأرشيف التفاعلي</p>
         </header>
 
-        <!-- شريط التبويبات الرئيسية (Nav Tabs) -->
         <div class="nav-tabs">
             <button class="tab-btn active" onclick="switchTab(event, 'tree-view')">🌳 الشجرة التفاعلية</button>
             <button class="tab-btn" onclick="switchTab(event, 'ai-view')">🤖 المساعد الذكي</button>
@@ -331,7 +337,6 @@
             <button class="tab-btn" onclick="switchTab(event, 'calendar-view')">📅 المناسبات والأعياد</button>
         </div>
 
-        <!-- 1. تبويب الشجرة التفاعلية -->
         <div id="tree-view" class="tab-content active">
             <div class="section-card">
                 <h2>عرض الشجرة التفاعلية</h2>
@@ -339,7 +344,6 @@
             </div>
         </div>
 
-        <!-- 2. تبويب المساعد الذكي (مع ميزة الترحيب والضوابط الصارمة) -->
         <div id="ai-view" class="tab-content">
             <div id="ai-assistant-container" class="ai-chat-box">
                 <div class="ai-header">
@@ -351,7 +355,6 @@
                 </div>
 
                 <div id="ai-messages" class="ai-messages-list">
-                    <!-- تتعبأ رسالة الترحيب آلياً عند تسجيل الدخول -->
                 </div>
 
                 <div class="ai-input-area">
@@ -361,7 +364,6 @@
             </div>
         </div>
 
-        <!-- 3. تبويب دليل العائلة والمهن -->
         <div id="directory-view" class="tab-content">
             <div class="section-card">
                 <h2>دليل الكفاءات والمهن العائلية</h2>
@@ -369,7 +371,6 @@
             </div>
         </div>
 
-        <!-- 4. تبويب الذاكرة والأرشيف -->
         <div id="archive-view" class="tab-content">
             <div class="section-card">
                 <h2>معرض الصور والأرشيف التاريخي</h2>
@@ -377,7 +378,6 @@
             </div>
         </div>
 
-        <!-- 5. تبويب التقويم والمناسبات -->
         <div id="calendar-view" class="tab-content">
             <div class="section-card">
                 <h2>التقويم والمناسبات العائلية</h2>
@@ -387,7 +387,6 @@
     </div>
 
     <script>
-        // ==================== نظام التبويبات (Tabs Switcher) ====================
         function switchTab(evt, tabId) {
             const contents = document.querySelectorAll('.tab-content');
             contents.forEach(c => c.classList.remove('active'));
@@ -399,40 +398,32 @@
             evt.currentTarget.classList.add('active');
         }
 
-        // ==================== قاعدة بيانات الملفات الشخصية وسنة الميلاد ====================
         const familyDatabase = [
             { birthYear: "1984", firstName: "سائد", nickname: "أبو محمد" },
             { birthYear: "1990", firstName: "محمد", nickname: "أبو إبراهيم" }
         ];
 
-        // ضوابط حماية الخصوصية ومنع المشاكل (Guardrails)
         const AI_SYSTEM_GUARDRAILS = {
             scopeOnly: true,
-            allowComparisons: false // حظر تام للمقارنات بين الفروع منعاً للحساسية
+            allowComparisons: false
         };
 
-        // تسجيل الدخول الآلي باليوزر (سنة الميلاد) واستخراج اسم الشخص أو كنيته للترحيب
         window.addEventListener("DOMContentLoaded", () => {
-            // محاكاة دخول المستخدم بسنة الميلاد (يمكن ربطها بآلية تسجيل الدخول الفعلية في المشروع)
-            const loggedInBirthYear = "1984"; 
-            
+            const loggedInBirthYear = "1984";
             const currentUser = familyDatabase.find(p => p.birthYear === loggedInBirthYear);
 
             if (currentUser) {
-                const displayName = currentUser.nickname || currentUser.firstName;
-                triggerAIWelcome(displayName);
+                triggerAIWelcome(currentUser.nickname || currentUser.firstName);
             } else {
                 triggerAIWelcome("العزيز");
             }
         });
 
-        // رسالة الترحيب المخصصة والمباشرة
         function triggerAIWelcome(userName) {
-            const welcomeText = `أهلاً وسهلاً بك يا ${userName} 👋! معك المساعد الذكي الخاص بموقع عائلة إيلابو هربيد، كيف يمك��ني تقديم المساعدة لك في كل ما يخص شجرة عائلتنا اليوم؟`;
+            const welcomeText = `أهلاً وسهلاً بك يا ${userName} 👋! معك المساعد الذكي الخاص بموقع عائلة إيلابو هربيد، كيف يمكنني تقديم المساعدة لك في كل ما يخص شجرة عائلتنا اليوم؟`;
             renderAIMessage("bot", welcomeText);
         }
 
-        // معالجة إرسال واستقبال رسائل المساعد الذكي
         function sendAIMessage() {
             const inputEl = document.getElementById("ai-user-input");
             const query = inputEl.value.trim();
@@ -447,19 +438,15 @@
             }, 500);
         }
 
-        // محرك الفحص الآمن والتحقق من الضوابط الصارمة
         function processQueryWithGuardrails(userQuery) {
             const query = userQuery.toLowerCase();
-
-            // أ) فحص حظر المقارنات بين الفروع والأبناء
             const comparisonKeywords = ["مقارنة", "من أفضل", "أكثر من", "أقل من", "مين فرع أفضل", "إحصائية فرع"];
             const isComparison = comparisonKeywords.some(keyword => query.includes(keyword));
-            
+
             if (isComparison && !AI_SYSTEM_GUARDRAILS.allowComparisons) {
                 return "عذراً، هذه الخاصية غير متاحة للحفاظ على أصول ومفهوم التماسك العائلي والخصوصية بين جميع الفروع.";
             }
 
-            // ب) فحص ما إذا كان السؤال متعلقاً بالشجرة أو العائلة
             const familyKeywords = ["قرابة", "نسب", "جد", "عم", "خال", "عائلة", "سيرة", "تاريخ", "تولد", "وفاة", "أبناء", "فرع", "صلة"];
             const isFamilyRelated = familyKeywords.some(keyword => query.includes(keyword));
 
@@ -467,11 +454,9 @@
                 return "عذراً، أنا مخصص فقط لمساعدتك في كل ما يتعلق بشجرة العائلة، الأنساب، والتاريخ العائلي الخاص بعائلتنا.";
             }
 
-            // ج) الرد النظامي في النطاق المسموح
             return `بناءً على سجلات شجرة عائلة إيلابو هربيد: تم فحص استفسارك بشأن "${userQuery}". هل ترغب في تتبع صلة القرابة أو معرفة تفاصيل إضافية؟`;
         }
 
-        // رسم الرسائل داخل صندوق المحادثة مع أزرار الحفظ (Client-Side Export)
         function renderAIMessage(sender, text) {
             const messagesContainer = document.getElementById("ai-messages");
             const msgDiv = document.createElement("div");
@@ -493,28 +478,27 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
 
-        // أدوات مساعدة للتصدير والنسخ الفوري للموبايل
         function downloadResponseAsText(text) {
             const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `إجابة_المساعد_العائلي.txt`;
+            a.download = 'إجابة_المساعد_العائلي.txt';
             a.click();
             URL.revokeObjectURL(url);
         }
 
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text);
-            alert("تم نسخ النص بنجاح!");
+            alert('تم نسخ النص بنجاح!');
         }
 
         function escapeText(text) {
-            return text.replace(/'/g, "\\'").replace(/\n/g, " ");
+            return text.replace(/'/g, "\\'").replace(/\n/g, ' ');
         }
 
         function handleKeyPress(e) {
-            if (e.key === "Enter") sendAIMessage();
+            if (e.key === 'Enter') sendAIMessage();
         }
     </script>
 </body>
